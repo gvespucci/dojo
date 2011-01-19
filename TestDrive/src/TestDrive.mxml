@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx"  xmlns:services="services.*" currentState="Employees" xmlns:valueObjects="valueObjects.*" 
+			   pageTitle="Corporate Directory">
+	<fx:Script>
+		<![CDATA[
+			import mx.controls.Alert;
+			import mx.controls.TextInput;
+			import mx.events.DataGridEvent;
+			import mx.events.FlexEvent;
+			import mx.events.ListEvent;
+			import mx.rpc.events.ResultEvent;
+			
+			public const ENTER_TEXT_HERE:String = "Enter last name here...";
+			
+			public function formatAsEuro(item:Object, column:DataGridColumn):String
+			{
+				return euroPrice.format(item[column.dataField]);
+			}
+			
+			protected function employeesGrid_creationCompleteHandler(event:FlexEvent):void
+			{
+				getEmployeesResult.token = employeeService.getEmployees();
+			}
+			
+			protected function departmentsGrid_creationCompleteHandler(event:FlexEvent):void
+			{
+				getDepartmentsResult.token = employeeService.getDepartments();
+			}
+			
+			protected function departmentsButton_clickHandler(event:MouseEvent):void
+			{
+				currentState="Departments";
+			}
+
+			protected function employeesButton_clickHandler(event:MouseEvent):void
+			{
+				currentState="Employees";
+			}
+
+			protected function employeesGrid_changeHandler(event:ListEvent):void
+			{
+				currentState="EmployeeDetails";
+			}
+
+			protected function searchText_focusInHandler(event:FocusEvent):void
+			{
+				if(searchText.text == ENTER_TEXT_HERE) {
+					searchText.text = "";
+				}
+			}
+
+			
+			protected function searchButton_clickHandler(event:MouseEvent):void
+			{
+				if(searchText.text != "") {
+					getEmployeesResult.token = employeeService.getEmployeesByName(searchText.text);
+				} else {
+					getEmployeesResult.token = employeeService.getEmployees();
+				}
+			}
+			
+
+			protected function biggerTextButton_clickHandler(event:MouseEvent):void
+			{
+				departmentsGrid.setStyle("fontSize",14); 
+			}
+
+			
+			protected function formButton_clickHandler(event:MouseEvent):void
+			{
+				employee.firstname = firstnameTextInput.text;
+				employee.lastname = lastnameTextInput.text;
+				employee.office = officeTextInput.text;
+				employee.zipcode = zipcodeTextInput.text;
+				employee.street = streetTextInput.text;
+				employee.state = stateTextInput.text;
+				employee.photofile = photofileTextInput.text;
+				employee.city = cityTextInput.text;
+				employee.title = titleTextInput.text;
+				employee.email = emailTextInput.text;
+				employee.officephone = officephoneTextInput.text;
+				employee.cellphone = cellphoneTextInput.text;
+				if(employee.id == 0) {
+					createEmployeeResult.token = employeeService.createEmployee(employee);
+				} else {
+					updateEmployeeResult.token = employeeService.updateEmployee(employee);				
+				}
+			}
+			
+
+			protected function addButton_clickHandler(event:MouseEvent):void
+			{
+				currentState="EmployeeAdd";
+				employee = new Employee();
+			}
+
+
+			protected function createEmployeeResult_resultHandler(event:ResultEvent):void
+			{
+				currentState="EmployeeDetails"; 
+				employee.id=event.result as int; 
+				employeesGrid.dataProvider.addItem(employee);
+				employeesGrid.selectedItem = employee; 
+				employeesGrid.verticalScrollPosition = employeesGrid.selectedIndex; 
+				employeesGrid.validateNow(); 
+			}
+
+
+			protected function updateButton_clickHandler(event:MouseEvent):void
+			{
+				currentState="EmployeeUpdate";
+			}
+			
+
+			protected function updateEmployeeResult_resultHandler(event:ResultEvent):void
+			{
+				currentState="EmployeeDetails"
+			}
+
+
+			protected function employeesGrid_itemEditEndHandler(event:DataGridEvent):void
+			{
+				employee[event.dataField] = 
+					(employeesGrid.itemEditorInstance as mx.controls.TextInput).text;
+				employeeService.updateEmployee(employee);	
+			}
+
+		]]>
+	</fx:Script>
+	<s:states>
+		<s:State name="Employees"/>
+		<s:State name="Departments"/>
+		<s:State name="EmployeeDetails"/>
+		<s:State name="EmployeeAdd"/>
+		<s:State name="EmployeeUpdate"/>
+	</s:states>
+	<fx:Declarations>
+		<s:CallResponder id="getEmployeesResult"/>
+		<services:EmployeeService id="employeeService" fault="Alert.show(event.fault.faultString + '\n' + event.fault.faultDetail)" showBusyCursor="true"/>
+		<s:CallResponder id="getDepartmentsResult"/>
+		<valueObjects:Employee id="employee"/>
+		<mx:CurrencyFormatter id="euroPrice" precision="2" 
+			  rounding="none"
+			  decimalSeparatorTo=","
+			  thousandsSeparatorTo="."
+			  useThousandsSeparator="true"
+			  useNegativeSign="true"
+			  currencySymbol="€ "
+			  alignSymbol="left"
+			  />
+		<s:CallResponder id="createEmployeeResult" result="createEmployeeResult_resultHandler(event)"/>
+		<s:CallResponder id="updateEmployeeResult" result="updateEmployeeResult_resultHandler(event)"/>
+	</fx:Declarations>
+	<fx:Binding source="employeesGrid.selectedItem as Employee" destination="employee"/>
+	<s:Label text="Corporate Directory" fontFamily="Arial" fontSize="20" x="36" y="34" color="#412BC2"/>
+	<s:Button label="Employees" x="36" y="82" id="employeesButton" enabled.Employees="false" enabled.EmployeeDetails="false" click.Departments="employeesButton_clickHandler(event)" enabled.EmployeeAdd="false" enabled.EmployeeUpdate="false"/>
+	<s:Button label="Departments" x="127" y="82" id="departmentsButton" enabled.Departments="false"  click="departmentsButton_clickHandler(event)"/>
+	<mx:DataGrid id="employeesGrid" creationComplete="employeesGrid_creationCompleteHandler(event)" dataProvider="{getEmployeesResult.lastResult}" includeIn="EmployeeAdd,EmployeeDetails,EmployeeUpdate,Employees" x="36" y="111" 
+		change="employeesGrid_changeHandler(event)"
+		editable="true" itemEditEnd="employeesGrid_itemEditEndHandler(event)">
+		<mx:columns>
+			<mx:DataGridColumn dataField="id" headerText="Id" editable="false"/>
+			<mx:DataGridColumn headerText="Last Name" dataField="lastname"/>
+			<mx:DataGridColumn headerText="First Name" dataField="firstname"/>
+			<mx:DataGridColumn headerText="Title" dataField="title"/>
+			<mx:DataGridColumn headerText="Cell Phone No." dataField="cellphone"/>
+			<mx:DataGridColumn headerText="Email Address" dataField="email"/>
+		</mx:columns>
+	</mx:DataGrid>
+	<mx:DataGrid includeIn="Departments" x="37" y="112" id="departmentsGrid" creationComplete="departmentsGrid_creationCompleteHandler(event)" dataProvider="{getDepartmentsResult.lastResult}">
+		<mx:columns>
+			<mx:DataGridColumn headerText="Name" dataField="name"/>
+			<mx:DataGridColumn headerText="ID" dataField="id"/>
+			<mx:DataGridColumn headerText="Manager" dataField="manager"/>
+			<mx:DataGridColumn headerText="Budget" dataField="budget" textAlign="right" labelFunction="formatAsEuro"/>
+			<mx:DataGridColumn headerText="Expenses" dataField="actualexpenses" textAlign="right" labelFunction="formatAsEuro"/>
+		</mx:columns>
+	</mx:DataGrid>
+	<s:Button includeIn="Departments" x="460" y="309" label="Chart data"/>
+	<mx:Form includeIn="EmployeeDetails" x="37" y="368">
+		<mx:FormItem label="Lastname" width="203">
+			<s:Label id="lastnameLabel" text="{employee.lastname}"/>
+		</mx:FormItem>
+		<mx:FormItem label="Firstname" width="203">
+			<s:Label id="firstnameLabel" text="{employee.firstname}"/>
+		</mx:FormItem>
+		<mx:FormItem label="Photofile" width="203">
+			<s:Label id="photofileLabel" text="{employee.photofile}"/>
+		</mx:FormItem>
+		<mx:FormItem label="Email" width="203">
+			<s:Label id="emailLabel" text="{employee.email}"/>
+		</mx:FormItem>
+		<mx:FormItem label="Officephone" width="203">
+			<s:Label id="officephoneLabel" text="{employee.officephone}" width="125"/>
+		</mx:FormItem>
+		<mx:FormItem label="Cellphone" width="203">
+			<s:Label id="cellphoneLabel" text="{employee.cellphone}"/>
+		</mx:FormItem>
+		<mx:FormItem label="Title" width="203">
+			<s:Label id="titleLabel" text="{employee.title}"/>
+		</mx:FormItem>
+	</mx:Form>
+	<mx:Form includeIn="EmployeeDetails" x="309" y="368" width="234">
+		<mx:FormItem label="Office" height="21" width="157">
+			<s:Label id="officeLabel" text="{employee.office}"/>
+		</mx:FormItem>
+		<mx:FormItem label="Street" height="21" width="157">
+			<s:Label id="streetLabel" text="{employee.street}"/>
+		</mx:FormItem>
+		<mx:FormItem label="City" height="21" width="157">
+			<s:Label id="cityLabel" text="{employee.city}"/>
+		</mx:FormItem>
+		<mx:FormItem label="State" height="21" width="157">
+			<s:Label id="stateLabel" text="{employee.state}"/>
+		</mx:FormItem>
+		<mx:FormItem label="Zipcode" height="21" width="157">
+			<s:Label id="zipcodeLabel" text="{employee.zipcode}"/>
+		</mx:FormItem>
+	</mx:Form>
+	<s:TextInput includeIn="EmployeeAdd,EmployeeDetails,EmployeeUpdate" x="37" y="325" text="{ENTER_TEXT_HERE}" id="searchText" focusIn="searchText_focusInHandler(event)"/>
+	<s:Button includeIn="EmployeeAdd,EmployeeDetails,EmployeeUpdate" x="173" y="326" label="Search" id="searchButton" 
+			  click="searchButton_clickHandler(event)"/>
+	<s:Button includeIn="EmployeeAdd,EmployeeDetails,EmployeeUpdate" x="470" y="326" label="Update" id="updateButton" enabled.EmployeeAdd="false" enabled.EmployeeUpdate="false"
+			  click="updateButton_clickHandler(event)"/>
+	<s:Button includeIn="EmployeeAdd,EmployeeDetails,EmployeeUpdate" x="392" y="326" label="Delete" id="deleteButton" enabled.EmployeeAdd="false" enabled.EmployeeUpdate="false"/>
+	<s:Button includeIn="EmployeeAdd,EmployeeDetails,EmployeeUpdate" label="New employee" id="addButton" click="addButton_clickHandler(event)"  x.EmployeeAdd="281" y.EmployeeAdd="326" x.EmployeeDetails="281" y.EmployeeDetails="326" enabled.EmployeeAdd="false" enabled.EmployeeUpdate="false" x.EmployeeUpdate="281" y.EmployeeUpdate="326"/>
+	<s:Button includeIn="Departments" x="372" y="309" label="Bigger Text" id="biggerTextButton" click="biggerTextButton_clickHandler(event)"/>
+	<mx:Form includeIn="EmployeeAdd,EmployeeUpdate" x="37" y="368" >
+		<mx:FormItem label="Lastname" width="203">
+			<s:TextInput id="lastnameTextInput" text="{employee.lastname}"/>
+		</mx:FormItem>
+		<mx:FormItem label="Firstname" width="203">
+			<s:TextInput id="firstnameTextInput" text="{employee.firstname}"/>
+		</mx:FormItem>
+		<mx:FormItem label="Photofile" width="203">
+			<s:TextInput id="photofileTextInput" text="{employee.photofile}"/>
+		</mx:FormItem>
+		<mx:FormItem label="Email" width="203">
+			<s:TextInput id="emailTextInput" text="{employee.email}"/>
+		</mx:FormItem>
+		<mx:FormItem label="Officephone" width="203">
+			<s:TextInput id="officephoneTextInput" text="{employee.officephone}" width="125"/>
+		</mx:FormItem>
+		<mx:FormItem label="Cellphone" width="203">
+			<s:TextInput id="cellphoneTextInput" text="{employee.cellphone}"/>
+		</mx:FormItem>
+		<mx:FormItem label="Title" width="203">
+			<s:TextInput id="titleTextInput" text="{employee.title}"/>
+		</mx:FormItem>
+	</mx:Form>
+	<mx:Form includeIn="EmployeeAdd,EmployeeUpdate" x="309" y="368" width="234">
+		<mx:FormItem label="Office" height="21" width="157">
+			<s:TextInput id="officeTextInput" text="{employee.office}"/>
+		</mx:FormItem>
+		<mx:FormItem label="Street" height="21" width="157">
+			<s:TextInput id="streetTextInput" text="{employee.street}"/>
+		</mx:FormItem>
+		<mx:FormItem label="City" height="21" width="157">
+			<s:TextInput id="cityTextInput" text="{employee.city}"/>
+		</mx:FormItem>
+		<mx:FormItem label="State" height="21" width="157">
+			<s:TextInput id="stateTextInput" text="{employee.state}"/>
+		</mx:FormItem>
+		<mx:FormItem label="Zipcode" height="21" width="157">
+			<s:TextInput id="zipcodeTextInput" text="{employee.zipcode}"/>
+		</mx:FormItem>
+		<mx:FormItem> 
+			<s:Button x="63" y="0" label.EmployeeAdd="Add" label.EmployeeUpdate="Update" id="formButton" 
+				click="formButton_clickHandler(event)"/>
+		</mx:FormItem> 	
+	</mx:Form>
+	
+	
+
+</s:Application>

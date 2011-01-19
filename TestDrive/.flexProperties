@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<flexProperties enableServiceManager="false" flexServerFeatures="4" flexServerType="2" fmlDataModelLocation=".model/TestDrive.fml" serverContextRoot="testdrive" serverRoot="C:/dev/tools/apache-tomcat-7.0.5/webapps/testdrive" serverRootURL="http://localhost:8080/testdrive/" toolCompile="true" useServerFlexSDK="false" version="2"/>

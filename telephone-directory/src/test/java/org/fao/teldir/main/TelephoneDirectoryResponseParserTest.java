@@ -18,56 +18,30 @@ public class TelephoneDirectoryResponseParserTest {
 	
 	@Test public void 
 	exactlyOneResponseTidy() throws Exception {
-		URL url = new URL("file:///C:/dev/workspaces/dojo/telephone-directory/src/test/resources/multipage-response.htm");
-		URLConnection urlConnection = url.openConnection();
-		
-		Response parsedResponse = new TelephoneDirectoryResponseParser().parse(urlConnection, new PrintWriter(System.out, true));
-	}
-
-	@Ignore @Test public void 
-	shouldReturnsAnEmptyResponseWhenURLConnectionIsNull_HtmParser() throws Exception {
-		Response response = new TelephoneDirectoryResponseParser().parseWithHtmlParser(null, new PrintWriter(System.out, true));
-		assertThat(response, is(equalTo(new Response())));
-	}
-	
-	@Ignore @Test public void 
-	shouldReturnsAnEmptyResponseWhenPrintWriterIsNull_HtmlParser() throws Exception {
-		Response response = new TelephoneDirectoryResponseParser().parseWithHtmlParser(null, null);
-		assertThat(response, is(equalTo(new Response())));
-	}
-	
-	@Ignore @Test public void 
-	exactlyOneResponseHtmlParser() throws Exception {
 		URL url = new URL("file:///C:/dev/workspaces/dojo/telephone-directory/src/test/resources/exactly-one-response.htm");
 		URLConnection urlConnection = url.openConnection();
 		
-		Response parsedResponse = new TelephoneDirectoryResponseParser().parseWithHtmlParser(urlConnection, new PrintWriter(System.out));
+		Response parsedResponse = new TelephoneDirectoryResponseParser().parse(urlConnection, new PrintWriter(System.out, true));
 		
 		Contact vespucci = ContactBuilder.aContact()
-			.withNameDept("VESPUCCI, Giorgio      (CIOK)")
+			.withNameDept("VESPUCCI, Giorgio  (CIOK)")
 			.withTitle("Computer information systems s").withRoom("B159").withExtension("56175")
 			.build();
-		Response expectedResponse = ResponseBuilder.aResponse().withContact(vespucci)
-			.build();
-		
+		Response expectedResponse = ResponseBuilder.aResponse().withContact(vespucci).build();
+	
 		assertThat(parsedResponse, is(equalTo(expectedResponse)));
 	}
-	
-	
-	@Ignore @Test public void 
-	multiPageResponseHtmlParser() throws Exception {
-		URL url = new URL("file:///C:/dev/workspaces/dojo/telephone-directory/src/test/resources/multipage-response.htm");
-		URLConnection urlConnection = url.openConnection();
-		
-		new TelephoneDirectoryResponseParser().parseWithHtmlParser(urlConnection, new PrintWriter(System.out, true));
+
+	@Test public void 
+	shouldReturnsAnEmptyResponseWhenURLConnectionIsNull_HtmParser() throws Exception {
+		Response response = new TelephoneDirectoryResponseParser().parse(null, new PrintWriter(System.out, true));
+		assertThat(response, is(equalTo(new Response())));
 	}
 	
-	@Ignore @Test public void 
-	tooManyResponsesHtmlParser() throws Exception {
-		URL url = new URL("file:///C:/dev/workspaces/dojo/telephone-directory/src/test/resources/too-many-responses.htm");
-		URLConnection urlConnection = url.openConnection();
-		
-		new TelephoneDirectoryResponseParser().parseWithHtmlParser(urlConnection, new PrintWriter(System.out, true));
+	@Test public void 
+	shouldReturnsAnEmptyResponseWhenPrintWriterIsNull_HtmlParser() throws Exception {
+		Response response = new TelephoneDirectoryResponseParser().parse(null, null);
+		assertThat(response, is(equalTo(new Response())));
 	}
 	
 	public static void main(String[] args) {
@@ -77,7 +51,7 @@ public class TelephoneDirectoryResponseParserTest {
 			URL url = new URL(intranetSearch);
 	        URLConnection urlConnection = url.openConnection();
 			
-	        new TelephoneDirectoryResponseParser().parseWithHtmlParser(urlConnection, new PrintWriter(System.out, true));
+	        new TelephoneDirectoryResponseParser().parse(urlConnection, new PrintWriter(System.out, true));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

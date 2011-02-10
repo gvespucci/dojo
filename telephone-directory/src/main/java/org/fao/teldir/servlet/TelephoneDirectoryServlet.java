@@ -5,15 +5,24 @@ package org.fao.teldir.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.Iterator;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.fao.teldir.main.TelephoneDirectoryResponseParser;
+
+import com.sun.org.apache.xerces.internal.impl.dv.ValidatedInfo;
+
 
 public class TelephoneDirectoryServlet extends HttpServlet {
-	
+
+	public static final String FAO_INTRANET_SERVLET = "http://intranet.fao.org/IntranetServlet?";
 	/**
 	 * 
 	 */
@@ -36,15 +45,52 @@ public class TelephoneDirectoryServlet extends HttpServlet {
 	 * @param resp
 	 */
 	private void processRequest(HttpServletRequest req, HttpServletResponse resp) {
-		resp.setContentType("text/html");
-        try {
-            PrintWriter out = resp.getWriter();
-            out.write("<html><body><h1>GET</h1>"+req.getParameterNames()+"</body></html>");
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-	}
-	
+		resp.setContentType("text/xml");
+		try {
+			PrintWriter out = resp.getWriter();
+			
+			String parameterSequence = buildParameterSequence(req, out);
+			out.println(parameterSequence);
+			
+			String completeUrl = FAO_INTRANET_SERVLET+parameterSequence;
+			URL url = new URL(completeUrl);
+			System.out.println(completeUrl);
+	        URLConnection urlConnection = url.openConnection();
+			
+	        new TelephoneDirectoryResponseParser().parse(urlConnection, resp.getWriter());
 
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * 
+	 * @param req
+	 * @param out
+	 * @return
+	 */
+	private String buildParameterSequence(HttpServletRequest req, PrintWriter out) {
+		StringBuilder builder = new StringBuilder();
+		@SuppressWarnings("unchecked")
+		Map<String, String[]> parameterMap = req.getParameterMap();
+		
+		for (Iterator<String> iterator = parameterMap.keySet().iterator(); iterator.hasNext();) {
+			String key = iterator.next();
+			String value = ((String[]) parameterMap.get( key ))[ 0 ];
+			
+			String keyValueSequence = key+"="+value;
+			
+			builder.append(keyValueSequence);
+			if(iterator.hasNext()) {
+				builder.append("&");
+			}
+		}
+		return builder.toString();
+	}
+
+	public static String searchFor(String searchString) {
+		return FAO_INTRANET_SERVLET+"searchType=teldir&pg=teldir&search_string="+searchString;
+	}
 }
+

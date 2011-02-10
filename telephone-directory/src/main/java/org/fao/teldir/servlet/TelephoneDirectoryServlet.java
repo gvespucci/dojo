@@ -9,6 +9,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -17,11 +18,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.fao.teldir.main.TelephoneDirectoryResponseParser;
 
-import com.sun.org.apache.xerces.internal.impl.dv.ValidatedInfo;
-
 
 public class TelephoneDirectoryServlet extends HttpServlet {
-
+	
 	public static final String FAO_INTRANET_SERVLET = "http://intranet.fao.org/IntranetServlet?";
 	/**
 	 * 
@@ -50,12 +49,12 @@ public class TelephoneDirectoryServlet extends HttpServlet {
 			PrintWriter out = resp.getWriter();
 			
 			String parameterSequence = buildParameterSequence(req, out);
-			out.println(parameterSequence);
 			
 			String completeUrl = FAO_INTRANET_SERVLET+parameterSequence;
 			URL url = new URL(completeUrl);
 			System.out.println(completeUrl);
 	        URLConnection urlConnection = url.openConnection();
+	        urlConnection.connect();
 			
 	        new TelephoneDirectoryResponseParser().parse(urlConnection, resp.getWriter());
 

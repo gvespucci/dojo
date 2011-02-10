@@ -17,19 +17,27 @@ import org.junit.Test;
 public class TelephoneDirectoryResponseParserTest {
 	
 	@Test public void 
-	shouldReturnsAnEmptyResponseWhenURLConnectionIsNull() throws Exception {
+	exactlyOneResponseTidy() throws Exception {
+		URL url = new URL("file:///C:/dev/workspaces/dojo/telephone-directory/src/test/resources/multipage-response.htm");
+		URLConnection urlConnection = url.openConnection();
+		
+		Response parsedResponse = new TelephoneDirectoryResponseParser().parse(urlConnection, new PrintWriter(System.out, true));
+	}
+
+	@Ignore @Test public void 
+	shouldReturnsAnEmptyResponseWhenURLConnectionIsNull_HtmParser() throws Exception {
 		Response response = new TelephoneDirectoryResponseParser().parseWithHtmlParser(null, new PrintWriter(System.out, true));
 		assertThat(response, is(equalTo(new Response())));
 	}
 	
-	@Test public void 
-	shouldReturnsAnEmptyResponseWhenPrintWriterIsNull() throws Exception {
+	@Ignore @Test public void 
+	shouldReturnsAnEmptyResponseWhenPrintWriterIsNull_HtmlParser() throws Exception {
 		Response response = new TelephoneDirectoryResponseParser().parseWithHtmlParser(null, null);
 		assertThat(response, is(equalTo(new Response())));
 	}
 	
 	@Ignore @Test public void 
-	exactlyOneResponse() throws Exception {
+	exactlyOneResponseHtmlParser() throws Exception {
 		URL url = new URL("file:///C:/dev/workspaces/dojo/telephone-directory/src/test/resources/exactly-one-response.htm");
 		URLConnection urlConnection = url.openConnection();
 		
@@ -45,16 +53,9 @@ public class TelephoneDirectoryResponseParserTest {
 		assertThat(parsedResponse, is(equalTo(expectedResponse)));
 	}
 	
-	@Test public void 
-	exactlyOneResponseTidy() throws Exception {
-		URL url = new URL("file:///C:/dev/workspaces/dojo/telephone-directory/src/test/resources/exactly-one-response.htm");
-		URLConnection urlConnection = url.openConnection();
-		
-		new TelephoneDirectoryResponseParser().parse(urlConnection, new PrintWriter(System.out, true));
-	}
 	
 	@Ignore @Test public void 
-	multiPageResponse() throws Exception {
+	multiPageResponseHtmlParser() throws Exception {
 		URL url = new URL("file:///C:/dev/workspaces/dojo/telephone-directory/src/test/resources/multipage-response.htm");
 		URLConnection urlConnection = url.openConnection();
 		
@@ -62,7 +63,7 @@ public class TelephoneDirectoryResponseParserTest {
 	}
 	
 	@Ignore @Test public void 
-	tooManyResponses() throws Exception {
+	tooManyResponsesHtmlParser() throws Exception {
 		URL url = new URL("file:///C:/dev/workspaces/dojo/telephone-directory/src/test/resources/too-many-responses.htm");
 		URLConnection urlConnection = url.openConnection();
 		

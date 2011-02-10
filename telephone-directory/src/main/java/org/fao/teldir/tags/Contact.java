@@ -1,5 +1,7 @@
 package org.fao.teldir.tags;
 
+import org.fao.teldir.util.StringUtils;
+
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @XStreamAlias("contact")
@@ -11,7 +13,7 @@ public class Contact {
 	private String extension = "";
 
 	public Contact withNameDept(String nameDept) {
-		this.nameDept = nameDept;
+		this.nameDept = StringUtils.emptyIfNull(nameDept);
 		return this;
 	}
 
@@ -62,16 +64,16 @@ public class Contact {
 	}
 
 	public Contact withTitle(String title) {
-		this.title = title;
+		this.title = StringUtils.emptyIfNull(title);
 		return this;
 	}
 	
-	public Contact withRoom(String room) {
-		this.roomNumber = room;
+	public Contact withRoom(String roomNumber) {
+		this.roomNumber = StringUtils.emptyIfNull(roomNumber);
 		return this;
 	}
 	public Contact withExtension(String extension) {
-		this.extension = extension;
+		this.extension = StringUtils.emptyIfNull(extension);
 		return this;
 	}
 	

@@ -1,0 +1,3 @@
+﻿# Lines starting with '#' are considered comments.
+# Ignore (generated) class files,
+*.class

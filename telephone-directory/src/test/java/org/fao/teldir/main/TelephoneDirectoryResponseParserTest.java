@@ -17,29 +17,62 @@ import org.junit.Test;
 public class TelephoneDirectoryResponseParserTest {
 	
 	@Test public void 
-	exactlyOneResponseTidy() throws Exception {
+	exactlyOneResponse() throws Exception {
 		URL url = new URL("file:///C:/dev/workspaces/dojo/telephone-directory/src/test/resources/exactly-one-response.htm");
 		URLConnection urlConnection = url.openConnection();
 		
 		Response parsedResponse = new TelephoneDirectoryResponseParser().parse(urlConnection, new PrintWriter(System.out, true));
 		
 		Contact vespucci = ContactBuilder.aContact()
-			.withNameDept("VESPUCCI, Giorgio  (CIOK)")
+			.withNameDept("VESPUCCI, Giorgio (CIOK)")
 			.withTitle("Computer information systems s").withRoom("B159").withExtension("56175")
 			.build();
 		Response expectedResponse = ResponseBuilder.aResponse().withContact(vespucci).build();
 	
 		assertThat(parsedResponse, is(equalTo(expectedResponse)));
 	}
+	
+	@Test public void 
+	multipleResponseNoPage() throws Exception {
+		URL url = new URL("file:///C:/dev/workspaces/dojo/telephone-directory/src/test/resources/multiple-response-no-page.htm");
+		URLConnection urlConnection = url.openConnection();
+		
+		Response parsedResponse = new TelephoneDirectoryResponseParser().parse(urlConnection, new PrintWriter(System.out, true));
+		
+		Contact maddalena = ContactBuilder.aContact()
+			.withNameDept("DI GIORGIO, Maddalena (AGNA)").withTitle("CLERK TYPIST").withRoom("C251").withExtension("55413")
+			.build();
+		
+		Contact lanzarone = ContactBuilder.aContact()
+			.withNameDept("LANZARONE, Giorgio (CIOK)").withTitle("INFORMATION MANAGEMENT OFF.").withRoom("A203").withExtension("53805")
+			.build();
+		
+		Contact pala = ContactBuilder.aContact()
+			.withNameDept("PALA, Giorgio (TCES)").withTitle("CLERK").withRoom("C653").withExtension("55649")
+			.build();
+		
+		Contact zazzara = ContactBuilder.aContact()
+			.withNameDept("ZAZZARA, Giorgio (ESAE)").withTitle("Administration/finance/ manage").withRoom("C302").withExtension("53040")
+			.build();
+		
+		Response expectedResponse = ResponseBuilder.aResponse()
+			.withContact(maddalena)
+			.withContact(lanzarone)
+			.withContact(pala)
+			.withContact(zazzara)
+			.build();
+	
+		assertThat(parsedResponse, is(equalTo(expectedResponse)));
+	}
 
 	@Test public void 
-	shouldReturnsAnEmptyResponseWhenURLConnectionIsNull_HtmParser() throws Exception {
+	shouldReturnsAnEmptyResponseWhenURLConnectionIsNull() throws Exception {
 		Response response = new TelephoneDirectoryResponseParser().parse(null, new PrintWriter(System.out, true));
 		assertThat(response, is(equalTo(new Response())));
 	}
 	
 	@Test public void 
-	shouldReturnsAnEmptyResponseWhenPrintWriterIsNull_HtmlParser() throws Exception {
+	shouldReturnsAnEmptyResponseWhenPrintWriterIsNull() throws Exception {
 		Response response = new TelephoneDirectoryResponseParser().parse(null, null);
 		assertThat(response, is(equalTo(new Response())));
 	}

@@ -67,8 +67,8 @@ public class TelephoneDirectoryResponseParser {
 				
 				String name = xpath.evaluate(staffMembersWith(NAME_DEPT), aStaffMember);
 				String title = xpath.evaluate(staffMembersWith(TITLE), aStaffMember);
-				String roomNumber = xpath.evaluate(staffMembersWith(ROOM_NUMBER), aStaffMember);
-				String extension = xpath.evaluate(staffMembersWith(EXTENSION), aStaffMember);
+				String roomNumber = xpath.evaluate("substring-after("+staffMembersWith(ROOM_NUMBER)+", 'Room ')", aStaffMember);
+				String extension = xpath.evaluate("substring-after("+staffMembersWith(EXTENSION)+", 'Ext. ')", aStaffMember);
 				
 				Contact contact = new Contact().withNameDept(name).withTitle(title).withRoom(roomNumber).withExtension(extension);
 			

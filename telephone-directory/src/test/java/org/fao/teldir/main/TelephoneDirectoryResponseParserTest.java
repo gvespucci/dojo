@@ -34,7 +34,7 @@ public class TelephoneDirectoryResponseParserTest {
 	}
 	
 	@Test public void 
-	multipleResponseNoPage() throws Exception {
+	multipleResponse_NoPage() throws Exception {
 		URL url = new URL("file:///C:/dev/workspaces/dojo/telephone-directory/src/test/resources/multiple-response-no-page.htm");
 		URLConnection urlConnection = url.openConnection();
 		

@@ -3,10 +3,8 @@
  */
 package org.fao.teldir.servlet;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Iterator;
@@ -19,7 +17,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.fao.teldir.main.TelephoneDirectoryResponseParser;
 
-
+/**
+ * 
+ */
 public class TelephoneDirectoryServlet extends HttpServlet {
 	
 	public static final String FAO_INTRANET_SERVLET = "http://intranet.fao.org/IntranetServlet?";
@@ -31,7 +31,6 @@ public class TelephoneDirectoryServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		processRequest(req, resp);
-
 	}
 
 	@Override
@@ -45,18 +44,17 @@ public class TelephoneDirectoryServlet extends HttpServlet {
 	 * @param resp
 	 */
 	private void processRequest(HttpServletRequest req, HttpServletResponse resp) {
-		resp.setContentType("text/xml");
 		try {
-			PrintWriter out = resp.getWriter();
-			
-			String parameterSequence = buildParameterSequence(req, out);
+			String parameterSequence = buildParameterSequenceFrom(req);
 			
 			String completeUrl = FAO_INTRANET_SERVLET+parameterSequence;
-			URL url = new URL(completeUrl);
 			System.out.println(completeUrl);
+			URL url = new URL(completeUrl);
 	        URLConnection urlConnection = url.openConnection();
 	        urlConnection.connect();
 			
+	        resp.setContentType("text/xml");
+
 	        new TelephoneDirectoryResponseParser().parse(new InputStreamReader(urlConnection.getInputStream()), resp.getWriter());
 
 		} catch (Exception e) {
@@ -67,10 +65,9 @@ public class TelephoneDirectoryServlet extends HttpServlet {
 	/**
 	 * 
 	 * @param req
-	 * @param out
 	 * @return
 	 */
-	private String buildParameterSequence(HttpServletRequest req, PrintWriter out) {
+	private String buildParameterSequenceFrom(HttpServletRequest req) {
 		StringBuilder builder = new StringBuilder();
 		@SuppressWarnings("unchecked")
 		Map<String, String[]> parameterMap = req.getParameterMap();

@@ -1,11 +1,8 @@
 package org.fao.teldir.main;
 
-
-
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
@@ -87,8 +84,7 @@ public class TelephoneDirectoryResponseParser {
 		return response;
 	}
 
-	private Document cleanIt(String htmlCode)
-			throws UnsupportedEncodingException {
+	private Document cleanIt(String htmlCode) throws UnsupportedEncodingException {
 		Tidy htmlCleaner = new Tidy();
 		Document cleanedHtml = htmlCleaner.parseDOM(new ByteArrayInputStream(htmlCode.getBytes("UTF-8")), null);
 		return cleanedHtml;

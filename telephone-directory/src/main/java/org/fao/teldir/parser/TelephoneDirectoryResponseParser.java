@@ -27,12 +27,13 @@ public class TelephoneDirectoryResponseParser {
 	 * 
 	 * @param reader TODO
 	 * @param writer
+	 * @param baseUrl TODO
 	 * @param jsonOutput TODO
 	 * @return
 	 * @throws Exception
 	 */
-	public Response parse(Reader reader, Writer writer) throws Exception {
-		return this.parse(reader, writer, MarshallerFactory.marshaller(MarshallFormat.XML));
+	public Response parse(Reader reader, Writer writer, String baseUrl) throws Exception {
+		return this.parse(reader, writer, MarshallerFactory.marshaller(MarshallFormat.XML), baseUrl);
 	}
 	
 	/**
@@ -40,10 +41,11 @@ public class TelephoneDirectoryResponseParser {
 	 * @param reader TODO
 	 * @param writer
 	 * @param marshaller TODO
+	 * @param baseUrl TODO
 	 * @return
 	 * @throws Exception
 	 */
-	public Response parse(Reader reader, Writer writer, Marshaller marshaller) throws Exception {
+	public Response parse(Reader reader, Writer writer, Marshaller marshaller, String baseUrl) throws Exception {
 		Response response = new Response();
 
 		if(reader != null && writer != null && marshaller != null) {
@@ -52,8 +54,7 @@ public class TelephoneDirectoryResponseParser {
 
 			Document cleanedHtml = cleanIt(htmlCode);
 			
-			response.fillFrom(cleanedHtml);
-			response.marshallTo(writer, marshaller);
+			response.fillFrom(cleanedHtml).marshallTo(writer, marshaller);
 		}
 		
 		return response;

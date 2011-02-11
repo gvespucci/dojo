@@ -49,28 +49,27 @@ public class TelephoneDirectoryServlet extends HttpServlet {
 	 */
 	private void processRequest(HttpServletRequest req, HttpServletResponse resp) {
 		try {
-			String parameterSequence = buildParameterSequenceFrom(req);
-			
-			String completeUrl = FAO_INTRANET_SERVLET+parameterSequence;
-			System.out.println(completeUrl);
-			URL url = new URL(completeUrl);
+			String urlToCall = FAO_INTRANET_SERVLET+req.getQueryString();
+
+			URL url = new URL(urlToCall);
 	        URLConnection urlConnection = url.openConnection();
 	        urlConnection.connect();
 			
 	        resp.setCharacterEncoding("UTF-8");
 
-	        Marshaller marshaller = MarshallerFactory.marshaller(MarshallFormat.XML);
+	        Marshaller marshaller = MarshallerFactory.marshaller(MarshallFormat.XML); //Parameter? Property?
 			
 	        resp.setContentType(marshaller.contentType());
 
 	        new TelephoneDirectoryResponseParser().parse(
 	        		new InputStreamReader(urlConnection.getInputStream()), 
 	        		resp.getWriter(), 
-	        		marshaller);
+	        		marshaller, 
+	        		req.getRequestURI());
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			 
+//			Exception managing?
 		} finally {
 			try {
 				Marshaller marshaller = MarshallerFactory.marshaller(MarshallFormat.XML);

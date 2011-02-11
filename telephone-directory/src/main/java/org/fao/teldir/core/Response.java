@@ -1,6 +1,5 @@
 package org.fao.teldir.core;
 
-import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +9,8 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import lombok.ToString;
+
 import org.fao.teldir.marshall.Marshaller;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -17,9 +18,11 @@ import org.w3c.dom.NodeList;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
+@ToString
 @XStreamAlias("response")
 public class Response {
 	
+	private Pages pages = new Pages();
 	private final List<Contact> teldir = new ArrayList<Contact>();
 
 	public static final String TITLE = "title";
@@ -30,15 +33,16 @@ public class Response {
 	public void add(Contact aContact) {
 		this.teldir.add(aContact);
 	}
-	
-	public void writeTo(PrintWriter writer) {
-		writer.println(this);
+
+	public void add(Pages pages) {
+		this.pages = pages;
 	}
 	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result + ((pages == null) ? 0 : pages.hashCode());
 		result = prime * result + ((teldir == null) ? 0 : teldir.hashCode());
 		return result;
 	}
@@ -52,6 +56,11 @@ public class Response {
 		if (getClass() != obj.getClass())
 			return false;
 		Response other = (Response) obj;
+		if (pages == null) {
+			if (other.pages != null)
+				return false;
+		} else if (!pages.equals(other.pages))
+			return false;
 		if (teldir == null) {
 			if (other.teldir != null)
 				return false;
@@ -60,12 +69,12 @@ public class Response {
 		return true;
 	}
 	
-	@Override
-	public String toString() {
-		return this.teldir.toString();
-	}
+//	@Override
+//	public String toString() {
+//		return this.pages + "\n" + this.teldir.toString();
+//	}
 
-	public void fillFrom(Document document) {
+	public Response fillFrom(Document document) {
 		try {
 			XPath xpath = XPathFactory.newInstance().newXPath();
 			NodeList staffMembers = (NodeList) xpath.evaluate("//table[@class='staffMember']", document, XPathConstants.NODESET);
@@ -82,9 +91,13 @@ public class Response {
 			
 				this.add(contact);
 			}
+			
+			Node pageSelectors = (Node) xpath.evaluate("//p[@class='pageSelector']", document, XPathConstants.NODE);
+			
 		} catch (XPathExpressionException e) {
 			e.printStackTrace();
 		}
+		return this;
 	}
 	
 	private String staffMembersWith(String className) {
@@ -94,4 +107,5 @@ public class Response {
 	public void marshallTo(Writer writer, Marshaller marshaller) throws Exception {
 		marshaller.marshall(this, writer);
 	}
+
 }

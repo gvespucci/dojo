@@ -12,6 +12,8 @@ import java.net.URLConnection;
 
 import org.fao.teldir.core.Contact;
 import org.fao.teldir.core.ContactBuilder;
+import org.fao.teldir.core.Pages;
+import org.fao.teldir.core.PagesBuilder;
 import org.fao.teldir.core.Response;
 import org.fao.teldir.core.ResponseBuilder;
 import org.fao.teldir.marshall.MarshallFormat;
@@ -36,7 +38,7 @@ public class TelephoneDirectoryResponseParserTest {
 		Response parsedResponse = theParser.parse(
 				new InputStreamReader(urlConnection.getInputStream()), 
 				new PrintWriter(System.out, true),
-				MarshallerFactory.marshaller(MarshallFormat.NULL));
+				MarshallerFactory.marshaller(MarshallFormat.NULL), "/yabba-dabba-du");
 		
 		Contact vespucci = ContactBuilder.aContact()
 			.withNameDept("VESPUCCI, Giorgio (CIOK)")
@@ -55,7 +57,7 @@ public class TelephoneDirectoryResponseParserTest {
 		Response parsedResponse = theParser.parse(
 				new InputStreamReader(urlConnection.getInputStream()), 
 				new PrintWriter(System.out, true),
-				MarshallerFactory.marshaller(MarshallFormat.NULL));
+				MarshallerFactory.marshaller(MarshallFormat.NULL), "/yabba-dabba-du");
 		
 		Contact maddalena = ContactBuilder.aContact()
 			.withNameDept("DI GIORGIO, Maddalena (AGNA)").withTitle("CLERK TYPIST").withRoom("C251").withExtension("55413")
@@ -91,7 +93,7 @@ public class TelephoneDirectoryResponseParserTest {
 		Response parsedResponse = theParser.parse(
 				new InputStreamReader(urlConnection.getInputStream()), 
 				new PrintWriter(System.out, true),
-				MarshallerFactory.marshaller(MarshallFormat.NULL));
+				MarshallerFactory.marshaller(MarshallFormat.NULL), "/yabba-dabba-du");
 		
 		Contact maddalena = ContactBuilder.aContact()
 			.withNameDept("DI GIORGIO, Maddalena (AGNA)").withTitle("CLERK TYPIST").withRoom("C251").withExtension("55413")
@@ -109,7 +111,10 @@ public class TelephoneDirectoryResponseParserTest {
 			.withNameDept("ZAZZARA, Giorgio (ESAE)").withTitle("Administration/finance/ manage").withRoom("C302").withExtension("53040")
 			.build();
 		
+		Pages pages = PagesBuilder.somePages().withNumberOfPages("5").build();
+		
 		Response expectedResponse = ResponseBuilder.aResponse()
+			.withPages(pages)
 			.withContact(maddalena)
 			.withContact(lanzarone)
 			.withContact(pala)
@@ -118,14 +123,14 @@ public class TelephoneDirectoryResponseParserTest {
 	
 		assertThat(parsedResponse, is(equalTo(expectedResponse)));
 		
-		fail("Assertions on pages please!");
+//		fail("Assertions on pages please!");
 	}
 
 	@Test public void 
 	shouldReturnAnEmptyResponseWhenReaderIsNull() throws Exception {
 		Response response = theParser.parse(null, 
 				new PrintWriter(System.out, true),
-				MarshallerFactory.marshaller(MarshallFormat.NULL));
+				MarshallerFactory.marshaller(MarshallFormat.NULL), "/yabba-dabba-du");
 		assertThat(response, is(equalTo(new Response())));
 	}
 	
@@ -134,7 +139,7 @@ public class TelephoneDirectoryResponseParserTest {
 		Response response = theParser.parse(
 				new FileReader(new File("C:/dev/workspaces/dojo/telephone-directory/src/test/resources/exactly-one-response.htm")), 
 				null, 
-				MarshallerFactory.marshaller(MarshallFormat.NULL));
+				MarshallerFactory.marshaller(MarshallFormat.NULL), "/yabba-dabba-du");
 		assertThat(response, is(equalTo(new Response())));
 	}
 	
@@ -143,7 +148,7 @@ public class TelephoneDirectoryResponseParserTest {
 		Response response = theParser.parse(
 				new FileReader(new File("C:/dev/workspaces/dojo/telephone-directory/src/test/resources/exactly-one-response.htm")), 
 				new PrintWriter(System.out, true), 
-				null);
+				null, "/yabba-dabba-du");
 		assertThat(response, is(equalTo(new Response())));
 	}
 	
@@ -157,7 +162,7 @@ public class TelephoneDirectoryResponseParserTest {
 	        new TelephoneDirectoryResponseParser().parse(
 	        		new InputStreamReader(urlConnection.getInputStream()), 
 	        		new PrintWriter(System.out, true), 
-	        		MarshallerFactory.marshaller(MarshallFormat.JSON));
+	        		MarshallerFactory.marshaller(MarshallFormat.JSON), "/yabba-dabba-du");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

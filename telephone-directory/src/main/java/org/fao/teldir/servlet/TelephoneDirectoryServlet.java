@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.fao.teldir.core.Response;
 import org.fao.teldir.marshall.MarshallFormat;
 import org.fao.teldir.marshall.Marshaller;
 import org.fao.teldir.marshall.MarshallerFactory;
@@ -69,6 +70,14 @@ public class TelephoneDirectoryServlet extends HttpServlet {
 
 		} catch (Exception e) {
 			e.printStackTrace();
+			 
+		} finally {
+			try {
+				Marshaller marshaller = MarshallerFactory.marshaller(MarshallFormat.XML);
+				marshaller.marshall(new Response(), resp.getWriter());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 

@@ -3,13 +3,14 @@
  */
 package org.fao.teldir.servlet;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -56,7 +57,7 @@ public class TelephoneDirectoryServlet extends HttpServlet {
 	        URLConnection urlConnection = url.openConnection();
 	        urlConnection.connect();
 			
-	        new TelephoneDirectoryResponseParser().parse(urlConnection, resp.getWriter());
+	        new TelephoneDirectoryResponseParser().parse(new InputStreamReader(urlConnection.getInputStream()), resp.getWriter());
 
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -3,6 +3,8 @@ package org.fao.teldir.main;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.URL;
 import java.net.URLConnection;
@@ -11,7 +13,6 @@ import org.fao.teldir.tags.Contact;
 import org.fao.teldir.tags.ContactBuilder;
 import org.fao.teldir.tags.Response;
 import org.fao.teldir.tags.ResponseBuilder;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class TelephoneDirectoryResponseParserTest {
@@ -21,7 +22,7 @@ public class TelephoneDirectoryResponseParserTest {
 		URL url = new URL("file:///C:/dev/workspaces/dojo/telephone-directory/src/test/resources/exactly-one-response.htm");
 		URLConnection urlConnection = url.openConnection();
 		
-		Response parsedResponse = new TelephoneDirectoryResponseParser().parse(urlConnection, new PrintWriter(System.out, true));
+		Response parsedResponse = new TelephoneDirectoryResponseParser().parse(new InputStreamReader(urlConnection.getInputStream()), new PrintWriter(System.out, true));
 		
 		Contact vespucci = ContactBuilder.aContact()
 			.withNameDept("VESPUCCI, Giorgio (CIOK)")
@@ -37,7 +38,7 @@ public class TelephoneDirectoryResponseParserTest {
 		URL url = new URL("file:///C:/dev/workspaces/dojo/telephone-directory/src/test/resources/multiple-response-no-page.htm");
 		URLConnection urlConnection = url.openConnection();
 		
-		Response parsedResponse = new TelephoneDirectoryResponseParser().parse(urlConnection, new PrintWriter(System.out, true));
+		Response parsedResponse = new TelephoneDirectoryResponseParser().parse(new InputStreamReader(urlConnection.getInputStream()), new PrintWriter(System.out, true));
 		
 		Contact maddalena = ContactBuilder.aContact()
 			.withNameDept("DI GIORGIO, Maddalena (AGNA)").withTitle("CLERK TYPIST").withRoom("C251").withExtension("55413")
@@ -67,7 +68,7 @@ public class TelephoneDirectoryResponseParserTest {
 
 	@Test public void 
 	shouldReturnsAnEmptyResponseWhenURLConnectionIsNull() throws Exception {
-		Response response = new TelephoneDirectoryResponseParser().parse(null, new PrintWriter(System.out, true));
+		Response response = new TelephoneDirectoryResponseParser().parse(null, null);
 		assertThat(response, is(equalTo(new Response())));
 	}
 	
@@ -84,7 +85,7 @@ public class TelephoneDirectoryResponseParserTest {
 			URL url = new URL(intranetSearch);
 	        URLConnection urlConnection = url.openConnection();
 			
-	        new TelephoneDirectoryResponseParser().parse(urlConnection, new PrintWriter(System.out, true));
+	        new TelephoneDirectoryResponseParser().parse(new BufferedReader(new InputStreamReader(urlConnection.getInputStream())), new PrintWriter(System.out, true));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

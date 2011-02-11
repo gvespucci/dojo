@@ -15,7 +15,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.fao.teldir.main.TelephoneDirectoryResponseParser;
+import org.fao.teldir.marshall.MarshallFormat;
+import org.fao.teldir.marshall.Marshaller;
+import org.fao.teldir.marshall.MarshallerFactory;
+import org.fao.teldir.parser.TelephoneDirectoryResponseParser;
 
 /**
  * 
@@ -53,9 +56,16 @@ public class TelephoneDirectoryServlet extends HttpServlet {
 	        URLConnection urlConnection = url.openConnection();
 	        urlConnection.connect();
 			
-	        resp.setContentType("text/xml");
+	        resp.setCharacterEncoding("UTF-8");
 
-	        new TelephoneDirectoryResponseParser().parse(new InputStreamReader(urlConnection.getInputStream()), resp.getWriter());
+	        Marshaller marshaller = MarshallerFactory.marshaller(MarshallFormat.XML);
+			
+	        resp.setContentType(marshaller.contentType());
+
+	        new TelephoneDirectoryResponseParser().parse(
+	        		new InputStreamReader(urlConnection.getInputStream()), 
+	        		resp.getWriter(), 
+	        		marshaller);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -74,7 +84,7 @@ public class TelephoneDirectoryServlet extends HttpServlet {
 		
 		for (Iterator<String> iterator = parameterMap.keySet().iterator(); iterator.hasNext();) {
 			String key = iterator.next();
-			String value = ((String[]) parameterMap.get( key ))[ 0 ];
+			String value = (parameterMap.get( key ))[ 0 ];
 			
 			String keyValueSequence = key+"="+value;
 			

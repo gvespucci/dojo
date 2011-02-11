@@ -1,4 +1,6 @@
-package org.fao.teldir.tags;
+package org.fao.teldir.core;
+
+import org.fao.teldir.core.Contact;
 
 public class ContactBuilder {
 	public static ContactBuilder aContact() {

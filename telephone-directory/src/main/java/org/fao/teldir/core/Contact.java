@@ -1,4 +1,4 @@
-package org.fao.teldir.tags;
+package org.fao.teldir.core;
 
 import org.fao.teldir.util.StringUtils;
 

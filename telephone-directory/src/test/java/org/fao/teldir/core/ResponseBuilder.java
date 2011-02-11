@@ -1,7 +1,10 @@
-package org.fao.teldir.tags;
+package org.fao.teldir.core;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.fao.teldir.core.Contact;
+import org.fao.teldir.core.Response;
 
 public class ResponseBuilder {
 

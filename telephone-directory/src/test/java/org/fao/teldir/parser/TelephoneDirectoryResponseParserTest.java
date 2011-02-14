@@ -3,13 +3,14 @@ package org.fao.teldir.parser;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
-import java.io.File;
-import java.io.FileReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.URL;
 import java.net.URLConnection;
 
+import javax.xml.xpath.XPathFactory;
+
+import org.fao.teldir.common.TestFiles;
 import org.fao.teldir.core.Contact;
 import org.fao.teldir.core.ContactBuilder;
 import org.fao.teldir.core.Pages;
@@ -32,13 +33,13 @@ public class TelephoneDirectoryResponseParserTest {
 
 	@Test public void 
 	exactlyOneResponse() throws Exception {
-		URL url = new URL("file:///C:/dev/workspaces/dojo/telephone-directory/src/test/resources/exactly-one-response.htm");
+		URL url = getClass().getResource(TestFiles.EXACTLY_ONE_RESPONSE_HTM); 
 		URLConnection urlConnection = url.openConnection();
 		
 		Response parsedResponse = theParser.parse(
 				new InputStreamReader(urlConnection.getInputStream()), 
 				new PrintWriter(System.out, true),
-				MarshallerFactory.marshaller(MarshallFormat.NULL), "/yabba-dabba-du");
+				MarshallerFactory.marshaller(MarshallFormat.NULL), "/yabba-dabba-du", XPathFactory.newInstance().newXPath());
 		
 		Contact vespucci = ContactBuilder.aContact()
 			.withNameDept("VESPUCCI, Giorgio (CIOK)")
@@ -51,13 +52,13 @@ public class TelephoneDirectoryResponseParserTest {
 	
 	@Test public void 
 	multipleResponse_NoPage() throws Exception {
-		URL url = new URL("file:///C:/dev/workspaces/dojo/telephone-directory/src/test/resources/multiple-response-no-page.htm");
+		URL url = getClass().getResource(TestFiles.MULTIPLE_RESPONSE_NO_PAGE_HTM); 
 		URLConnection urlConnection = url.openConnection();
 		
 		Response parsedResponse = theParser.parse(
 				new InputStreamReader(urlConnection.getInputStream()), 
 				new PrintWriter(System.out, true),
-				MarshallerFactory.marshaller(MarshallFormat.NULL), "/yabba-dabba-du");
+				MarshallerFactory.marshaller(MarshallFormat.NULL), "/yabba-dabba-du", XPathFactory.newInstance().newXPath());
 		
 		Contact maddalena = ContactBuilder.aContact()
 			.withNameDept("DI GIORGIO, Maddalena (AGNA)").withTitle("CLERK TYPIST").withRoom("C251").withExtension("55413")
@@ -87,13 +88,13 @@ public class TelephoneDirectoryResponseParserTest {
 	
 	@Test public void 
 	multipleResponse_WithPages() throws Exception {
-		URL url = new URL("file:///C:/dev/workspaces/dojo/telephone-directory/src/test/resources/multipage-response.htm");
+		URL url = getClass().getResource(TestFiles.MULTIPAGE_RESPONSE_HTM);
 		URLConnection urlConnection = url.openConnection();
 		
 		Response parsedResponse = theParser.parse(
 				new InputStreamReader(urlConnection.getInputStream()), 
 				new PrintWriter(System.out, true),
-				MarshallerFactory.marshaller(MarshallFormat.NULL), "/yabba-dabba-du");
+				MarshallerFactory.marshaller(MarshallFormat.NULL), "/yabba-dabba-du", XPathFactory.newInstance().newXPath());
 		
 		Contact maddalena = ContactBuilder.aContact()
 			.withNameDept("DI GIORGIO, Maddalena (AGNA)").withTitle("CLERK TYPIST").withRoom("C251").withExtension("55413")
@@ -111,7 +112,7 @@ public class TelephoneDirectoryResponseParserTest {
 			.withNameDept("ZAZZARA, Giorgio (ESAE)").withTitle("Administration/finance/ manage").withRoom("C302").withExtension("53040")
 			.build();
 		
-		Pages pages = PagesBuilder.somePages().withNumberOfPages("5").build();
+		Pages pages = PagesBuilder.somePages().withNumberOfPages("6").build();
 		
 		Response expectedResponse = ResponseBuilder.aResponse()
 			.withPages(pages)
@@ -123,32 +124,31 @@ public class TelephoneDirectoryResponseParserTest {
 	
 		assertThat(parsedResponse, is(equalTo(expectedResponse)));
 		
-//		fail("Assertions on pages please!");
 	}
 
 	@Test public void 
 	shouldReturnAnEmptyResponseWhenReaderIsNull() throws Exception {
 		Response response = theParser.parse(null, 
 				new PrintWriter(System.out, true),
-				MarshallerFactory.marshaller(MarshallFormat.NULL), "/yabba-dabba-du");
+				MarshallerFactory.marshaller(MarshallFormat.NULL), "/yabba-dabba-du", XPathFactory.newInstance().newXPath());
 		assertThat(response, is(equalTo(new Response())));
 	}
 	
 	@Test public void 
 	shouldReturnAnEmptyResponseWhenWriterIsNull() throws Exception {
 		Response response = theParser.parse(
-				new FileReader(new File("C:/dev/workspaces/dojo/telephone-directory/src/test/resources/exactly-one-response.htm")), 
+				new InputStreamReader(getClass().getResourceAsStream(TestFiles.EXACTLY_ONE_RESPONSE_HTM)), 
 				null, 
-				MarshallerFactory.marshaller(MarshallFormat.NULL), "/yabba-dabba-du");
+				MarshallerFactory.marshaller(MarshallFormat.NULL), "/yabba-dabba-du", XPathFactory.newInstance().newXPath());
 		assertThat(response, is(equalTo(new Response())));
 	}
 	
 	@Test public void 
 	shouldReturnAnEmptyResponseWhenMarshallerIsNull() throws Exception {
 		Response response = theParser.parse(
-				new FileReader(new File("C:/dev/workspaces/dojo/telephone-directory/src/test/resources/exactly-one-response.htm")), 
+				new InputStreamReader(getClass().getResourceAsStream(TestFiles.EXACTLY_ONE_RESPONSE_HTM)), 
 				new PrintWriter(System.out, true), 
-				null, "/yabba-dabba-du");
+				null, "/yabba-dabba-du", XPathFactory.newInstance().newXPath());
 		assertThat(response, is(equalTo(new Response())));
 	}
 	
@@ -162,7 +162,7 @@ public class TelephoneDirectoryResponseParserTest {
 	        new TelephoneDirectoryResponseParser().parse(
 	        		new InputStreamReader(urlConnection.getInputStream()), 
 	        		new PrintWriter(System.out, true), 
-	        		MarshallerFactory.marshaller(MarshallFormat.JSON), "/yabba-dabba-du");
+	        		MarshallerFactory.marshaller(MarshallFormat.JSON), "/yabba-dabba-du", XPathFactory.newInstance().newXPath());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

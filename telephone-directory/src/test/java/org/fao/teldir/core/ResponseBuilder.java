@@ -3,10 +3,15 @@ package org.fao.teldir.core;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.xpath.XPathFactory;
+
+import org.w3c.dom.Document;
+
 public class ResponseBuilder {
 
 	private final List<Contact> contacts = new ArrayList<Contact>();
 	private Pages pages = new Pages();
+	private Document document;
 
 	public static ResponseBuilder aResponse() {
 		return new ResponseBuilder();
@@ -14,10 +19,14 @@ public class ResponseBuilder {
 
 	public Response build() {
 		Response response = new Response();
-		for (Contact contact : contacts) {
-			response.add(contact);
+		if(document != null) {
+			response.fillFrom(this.document, XPathFactory.newInstance().newXPath());
+		} else {
+			for (Contact contact : contacts) {
+				response.add(contact);
+			}
+			response.add(this.pages);
 		}
-		response.add(this.pages);
 		return response;
 	}
 
@@ -28,6 +37,11 @@ public class ResponseBuilder {
 
 	public ResponseBuilder withPages(Pages pages) {
 		this.pages = pages;
+		return this;
+	}
+
+	public ResponseBuilder fromDocument(Document document) {
+		this.document = document;
 		return this;
 	}
 

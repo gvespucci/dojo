@@ -7,6 +7,9 @@ import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathFactory;
+
 import org.fao.teldir.core.Response;
 import org.fao.teldir.marshall.MarshallFormat;
 import org.fao.teldir.marshall.Marshaller;
@@ -33,7 +36,7 @@ public class TelephoneDirectoryResponseParser {
 	 * @throws Exception
 	 */
 	public Response parse(Reader reader, Writer writer, String baseUrl) throws Exception {
-		return this.parse(reader, writer, MarshallerFactory.marshaller(MarshallFormat.XML), baseUrl);
+		return this.parse(reader, writer, MarshallerFactory.marshaller(MarshallFormat.XML), baseUrl, XPathFactory.newInstance().newXPath());
 	}
 	
 	/**
@@ -42,10 +45,11 @@ public class TelephoneDirectoryResponseParser {
 	 * @param writer
 	 * @param marshaller TODO
 	 * @param baseUrl TODO
+	 * @param xpath TODO
 	 * @return
 	 * @throws Exception
 	 */
-	public Response parse(Reader reader, Writer writer, Marshaller marshaller, String baseUrl) throws Exception {
+	public Response parse(Reader reader, Writer writer, Marshaller marshaller, String baseUrl, XPath xpath) throws Exception {
 		Response response = new Response();
 
 		if(reader != null && writer != null && marshaller != null) {
@@ -54,7 +58,7 @@ public class TelephoneDirectoryResponseParser {
 
 			Document cleanedHtml = cleanIt(htmlCode);
 			
-			response.fillFrom(cleanedHtml).marshallTo(writer, marshaller);
+			response.fillFrom(cleanedHtml, xpath).marshallTo(writer, marshaller);
 		}
 		
 		return response;

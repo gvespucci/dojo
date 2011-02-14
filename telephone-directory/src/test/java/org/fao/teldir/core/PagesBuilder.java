@@ -9,8 +9,7 @@ public class PagesBuilder {
 	private String numberOfPages;
 
 	public Pages build() {
-		Pages pages = new Pages();
-		pages.withNumberOfPages(this.numberOfPages);
+		Pages pages = new Pages().withNumberOfPages(this.numberOfPages);
 		return pages;
 	}
 

@@ -7,13 +7,12 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.Iterator;
-import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.xpath.XPathFactory;
 
 import org.fao.teldir.core.Response;
 import org.fao.teldir.marshall.MarshallFormat;
@@ -65,7 +64,7 @@ public class TelephoneDirectoryServlet extends HttpServlet {
 	        		new InputStreamReader(urlConnection.getInputStream()), 
 	        		resp.getWriter(), 
 	        		marshaller, 
-	        		req.getRequestURI());
+	        		req.getRequestURI(), XPathFactory.newInstance().newXPath());
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -78,30 +77,6 @@ public class TelephoneDirectoryServlet extends HttpServlet {
 				e.printStackTrace();
 			}
 		}
-	}
-
-	/**
-	 * 
-	 * @param req
-	 * @return
-	 */
-	private String buildParameterSequenceFrom(HttpServletRequest req) {
-		StringBuilder builder = new StringBuilder();
-		@SuppressWarnings("unchecked")
-		Map<String, String[]> parameterMap = req.getParameterMap();
-		
-		for (Iterator<String> iterator = parameterMap.keySet().iterator(); iterator.hasNext();) {
-			String key = iterator.next();
-			String value = (parameterMap.get( key ))[ 0 ];
-			
-			String keyValueSequence = key+"="+value;
-			
-			builder.append(keyValueSequence);
-			if(iterator.hasNext()) {
-				builder.append("&");
-			}
-		}
-		return builder.toString();
 	}
 
 	public static String searchFor(String searchString) {

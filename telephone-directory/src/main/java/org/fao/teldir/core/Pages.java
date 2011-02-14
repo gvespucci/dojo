@@ -81,8 +81,15 @@ public class Pages {
 		return true;
 	}
 
-	public void withNumberOfPages(String numberOfPages) {
-		this.numberOfPages = numberOfPages;
+	public Pages withNumberOfPages(String numberOfPages) {
+		if( isThereAtLeastOnePage(numberOfPages)) {
+			this.numberOfPages = numberOfPages;
+		}
+		return this;
+	}
+
+	private boolean isThereAtLeastOnePage(String numberOfPages) {
+		return ! "0".equals(numberOfPages);
 	}
 	
 	

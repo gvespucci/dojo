@@ -8,9 +8,15 @@ public class PagesBuilder {
 
 	private String numberOfPages = "";
 	private String currentPage = "";
+	private String previousPage = "";
+	private String nextPage = "";
 
 	public Pages build() {
-		Pages pages = new Pages().withNumberOfPages(this.numberOfPages).withCurrentPage(this.currentPage);
+		Pages pages = new Pages()
+			.withNumberOfPages(this.numberOfPages)
+			.withCurrentPage(this.currentPage)
+			.withPreviousPage(this.previousPage)
+			.withNextPage(this.nextPage);
 		return pages;
 	}
 
@@ -26,6 +32,16 @@ public class PagesBuilder {
 	
 	public static PagesBuilder sixPages() {
 		return PagesBuilder.somePages().withNumberOfPages("6");
+	}
+
+	public PagesBuilder withPreviousPage(String previousPage) {
+		this.previousPage  = previousPage;
+		return this;
+	}
+
+	public PagesBuilder withNextPage(String nextPage) {
+		this.nextPage  = nextPage;
+		return this;
 	}
 
 }

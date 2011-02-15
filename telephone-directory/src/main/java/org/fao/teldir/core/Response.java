@@ -18,8 +18,8 @@ import org.w3c.dom.NodeList;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
-@ToString
 @XStreamAlias("response")
+@ToString
 public class Response {
 	
 	private Pages pages = new Pages();
@@ -110,11 +110,27 @@ public class Response {
 				Node aText = textItems.item(i);
 				textCollector.append(aText.getNodeValue());
 			}
-			String currentPageNumber = StringUtils.onlyNumbers(textCollector.toString());
+			String currentPageNumber = StringUtils.retainOnlyNumbers(textCollector.toString());
 			
-			this.add(new Pages().withNumberOfPages(""+numberOfPages).withCurrentPage(currentPageNumber));
+			String previousPageNumber = isFirstPage(currentPageNumber) ? "" : ""+(Integer.parseInt(currentPageNumber)-1);
+			String nextPageNumber = isLastPage(numberOfPages, currentPageNumber) ? "" : ""+(Integer.parseInt(currentPageNumber)+1);
+			
+			this.add(
+					new Pages()
+						.withNumberOfPages(""+numberOfPages)
+						.withCurrentPage(currentPageNumber)
+						.withPreviousPage(previousPageNumber)
+						.withNextPage(nextPageNumber));
 			
 		}
+	}
+
+	private boolean isLastPage(int numberOfPages, String currentPageNumber) {
+		return Integer.parseInt(currentPageNumber) == numberOfPages;
+	}
+
+	private boolean isFirstPage(String currentPageNumber) {
+		return Integer.parseInt(currentPageNumber) == 1;
 	}
 
 	private int numberOfPageLinkIn(Document document, XPath xpath) throws XPathExpressionException {
@@ -155,6 +171,22 @@ public class Response {
 
 	public void marshallTo(Writer writer, Marshaller marshaller) throws Exception {
 		marshaller.marshall(this, writer);
+	}
+	
+	public String currentPage() {
+		return this.pages.current();
+	}
+	
+	public String previousPage() {
+		return this.pages.previous();
+	}
+	
+	public String nextPage() {
+		return this.pages.next();
+	}
+	
+	public String howManyPages() {
+		return this.pages.howMany();
 	}
 
 }

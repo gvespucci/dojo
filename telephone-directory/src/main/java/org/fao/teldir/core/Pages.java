@@ -5,8 +5,8 @@ import lombok.ToString;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 
-@ToString
 @XStreamAlias("pages")
+@ToString
 public class Pages {
 	@XStreamAsAttribute
 	@XStreamAlias("num")
@@ -24,7 +24,7 @@ public class Pages {
 	@XStreamAlias("next")
 	private String nextPage = "";
 	
-	@XStreamAlias("base-url")
+	@XStreamAlias("url")
 	@XStreamAsAttribute
 	private String baseUrl = "";
 
@@ -98,5 +98,29 @@ public class Pages {
 		return this;
 	}
 	
+	public Pages withPreviousPage(String previousPage) {
+		this.previousPage = previousPage;
+		return this;
+	}
+
+	public Pages withNextPage(String nextPage) {
+		this.nextPage = nextPage;
+		return this;
+	}
 	
+	public String current() {
+		return this.currentPage;
+	}
+	
+	public String previous() {
+		return this.previousPage;
+	}
+	
+	public String next() {
+		return this.nextPage;
+	}
+	
+	public String howMany() {
+		return this.numberOfPages;
+	}
 }

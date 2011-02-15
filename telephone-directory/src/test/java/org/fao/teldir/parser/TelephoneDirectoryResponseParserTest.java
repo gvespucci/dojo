@@ -112,7 +112,7 @@ public class TelephoneDirectoryResponseParserTest {
 			.withNameDept("ZAZZARA, Giorgio (ESAE)").withTitle("Administration/finance/ manage").withRoom("C302").withExtension("53040")
 			.build();
 		
-		Pages pages = PagesBuilder.somePages().withNumberOfPages("6").withCurrentPage("1").build();
+		Pages pages = PagesBuilder.somePages().withNumberOfPages("6").withCurrentPage("1").withNextPage("2").build();
 		
 		Response expectedResponse = ResponseBuilder.aResponse()
 			.withPages(pages)

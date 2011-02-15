@@ -125,5 +125,11 @@ public class ResponseTest {
 		Response actualResponse = new Response().fillFrom(lastPagChosenDocument, xpath);
 		assertThat(actualResponse.nextPage(), is(equalTo("")));
 	}
+	
+	@Test
+	public void baseUrl() throws Exception {
+		Response actualResponse = new Response().fillFrom(firstPageChosenDocument, xpath);
+		assertThat(actualResponse.baseUrl(), is(equalTo("/IntranetServlet?searchType=teldir&pg=teldir&search_string=561"+"&respg=")));
+	}
 
 }

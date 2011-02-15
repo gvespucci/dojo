@@ -89,40 +89,70 @@ public class Response {
 		int numberOfPages = numberOfPageLinkIn(document, xpath);
 		if(numberOfPages > 0) {
 			
-			String previousLinkExpression = pageSelectors()+"/a[text()='< Prev']";
-			Node prevAnchor = (Node)xpath.evaluate(previousLinkExpression, document, XPathConstants.NODE);
-			if(prevAnchor != null) {
-				numberOfPages--;			
-			}
+			numberOfPages = calculateRightNumberOfPages(document, xpath, numberOfPages);
 
-			String nextLinkExpression = pageSelectors()+"/a[text()='Next >']";
-			Node nextAnchor = (Node)xpath.evaluate(nextLinkExpression, document, XPathConstants.NODE);
-			if(nextAnchor != null) {
-				numberOfPages--;
-			}
-			numberOfPages++;
-
-			String textCharactersExpression = "//p[@class='pageSelector']/text()[translate(., '&#x20;&#x09;&#x0a;&#x0d;&#xa0;', '')]";
-			NodeList textItems = (NodeList)xpath.evaluate(textCharactersExpression, document, XPathConstants.NODESET);
-			
-			StringBuilder textCollector = new StringBuilder();
-			for (int i = 0; i < textItems.getLength(); i++) {
-				Node aText = textItems.item(i);
-				textCollector.append(aText.getNodeValue());
-			}
-			String currentPageNumber = StringUtils.retainOnlyNumbers(textCollector.toString());
-			
-			String previousPageNumber = isFirstPage(currentPageNumber) ? "" : ""+(Integer.parseInt(currentPageNumber)-1);
-			String nextPageNumber = isLastPage(numberOfPages, currentPageNumber) ? "" : ""+(Integer.parseInt(currentPageNumber)+1);
+			String currentPageNumber = currentPageNumberFrom(document, xpath);
+			String previousPageNumber = calculatePreviousPageNumberFrom(currentPageNumber);
+			String nextPageNumber = calculateNextPageNumberFrom(numberOfPages, currentPageNumber);
+			String baseUrl = baseUrlFrom(document, xpath);
 			
 			this.add(
 					new Pages()
 						.withNumberOfPages(""+numberOfPages)
 						.withCurrentPage(currentPageNumber)
 						.withPreviousPage(previousPageNumber)
-						.withNextPage(nextPageNumber));
+						.withNextPage(nextPageNumber)
+						.withBaseUrl(baseUrl));
 			
 		}
+	}
+
+	private String calculateNextPageNumberFrom(int numberOfPages, String currentPageNumber) {
+		return isLastPage(numberOfPages, currentPageNumber) ? "" : ""+(Integer.parseInt(currentPageNumber)+1);
+	}
+
+	private String calculatePreviousPageNumberFrom(String currentPageNumber) {
+		return isFirstPage(currentPageNumber) ? "" : ""+(Integer.parseInt(currentPageNumber)-1);
+	}
+
+	private String currentPageNumberFrom(Document document, XPath xpath) throws XPathExpressionException {
+		String textCharactersExpression = "//p[@class='pageSelector']/text()[translate(., '&#x20;&#x09;&#x0a;&#x0d;&#xa0;', '')]";
+		NodeList textItems = (NodeList)xpath.evaluate(textCharactersExpression, document, XPathConstants.NODESET);
+		
+		StringBuilder textCollector = new StringBuilder();
+		for (int i = 0; i < textItems.getLength(); i++) {
+			Node aText = textItems.item(i);
+			textCollector.append(aText.getNodeValue());
+		}
+		String currentPageNumber = StringUtils.retainOnlyNumbers(textCollector.toString());
+		return currentPageNumber;
+	}
+
+	private int calculateRightNumberOfPages(Document document, XPath xpath,
+			int numberOfPages) throws XPathExpressionException {
+		String previousLinkExpression = pageSelectors()+"/a[text()='< Prev']";
+		Node prevAnchor = (Node)xpath.evaluate(previousLinkExpression, document, XPathConstants.NODE);
+		if(prevAnchor != null) {
+			numberOfPages--;			
+		}
+
+		String nextLinkExpression = pageSelectors()+"/a[text()='Next >']";
+		Node nextAnchor = (Node)xpath.evaluate(nextLinkExpression, document, XPathConstants.NODE);
+		if(nextAnchor != null) {
+			numberOfPages--;
+		}
+		numberOfPages++;
+		return numberOfPages;
+	}
+
+	private String baseUrlFrom(Document document, XPath xpath)
+			throws XPathExpressionException {
+		String hrefExpression = "//p[@class='pageSelector']/a/@href";
+		Node href = (Node)xpath.evaluate(hrefExpression, document, XPathConstants.NODE);
+		System.out.println(href.getNodeValue());
+		
+		String baseUrl = href.getNodeValue();
+		return baseUrl;
 	}
 
 	private boolean isLastPage(int numberOfPages, String currentPageNumber) {
@@ -187,6 +217,10 @@ public class Response {
 	
 	public String howManyPages() {
 		return this.pages.howMany();
+	}
+	
+	public String baseUrl() {
+		return this.pages.url();
 	}
 
 }

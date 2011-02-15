@@ -108,6 +108,11 @@ public class Pages {
 		return this;
 	}
 	
+	public Pages withBaseUrl(String baseUrl) {
+		this.baseUrl = baseUrl;
+		return this;
+	}
+	
 	public String current() {
 		return this.currentPage;
 	}
@@ -123,4 +128,10 @@ public class Pages {
 	public String howMany() {
 		return this.numberOfPages;
 	}
+	
+	public String url() {
+		return this.baseUrl;
+	}
+	
+	
 }

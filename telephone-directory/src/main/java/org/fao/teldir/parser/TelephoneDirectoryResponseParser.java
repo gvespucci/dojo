@@ -66,6 +66,8 @@ public class TelephoneDirectoryResponseParser {
 
 	private Document cleanIt(String htmlCode) throws UnsupportedEncodingException {
 		Tidy htmlCleaner = new Tidy();
+		htmlCleaner.setQuiet(true);
+		htmlCleaner.setShowWarnings(false);
 		Document cleanedHtml = htmlCleaner.parseDOM(new ByteArrayInputStream(htmlCode.getBytes("UTF-8")), null);
 		return cleanedHtml;
 	}

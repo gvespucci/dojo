@@ -6,4 +6,8 @@ public class StringUtils {
 		return maybeNull != null ? maybeNull : "";
 	}
 
+	public static String onlyNumbers(String string) {
+		return string.replaceAll("[^0-9]","");
+	}
+
 }

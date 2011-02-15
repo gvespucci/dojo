@@ -92,5 +92,11 @@ public class Pages {
 		return ! "0".equals(numberOfPages);
 	}
 	
+
+	public Pages withCurrentPage(String currentPage) {
+		this.currentPage = currentPage;
+		return this;
+	}
+	
 	
 }

@@ -11,6 +11,7 @@ import javax.xml.xpath.XPathExpressionException;
 import lombok.ToString;
 
 import org.fao.teldir.marshall.Marshaller;
+import org.fao.teldir.util.StringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -73,14 +74,11 @@ public class Response {
 	 * @param document
 	 * @param xpath TODO
 	 * @return
+	 * @throws Exception 
 	 */
-	public Response fillFrom(Document document, XPath xpath) {
-		try {
-			addContactsFrom(document, xpath);
-			addPagesFrom(document, xpath);
-		} catch (XPathExpressionException e) {
-			e.printStackTrace();
-		}
+	public Response fillFrom(Document document, XPath xpath) throws Exception {
+		addContactsFrom(document, xpath);
+		addPagesFrom(document, xpath);
 		return this;
 	}
 
@@ -102,24 +100,18 @@ public class Response {
 			}
 			numberOfPages++;
 
-			this.add(new Pages().withNumberOfPages(""+numberOfPages));
-
-
-//			Node pageSelector = (Node) xpath.evaluate(aPageSelectorExpression, document, XPathConstants.NODE);
-//			if(pageSelector != null) {
-//
-//				NodeList childNodes = pageSelector.getChildNodes();
-//				System.out.println(aPageSelectorExpression+": "+childNodes.getLength());
-//				for (int i = 0; i < childNodes.getLength(); i++) {
-//					Node child = childNodes.item(i);
-//					if(child.getNodeType() == Node.TEXT_NODE) {
-//						System.out.println(i+" text:["+child.getNodeValue()+"]");
-//					} else {
-//						System.out.println(i+" no-text:"+child.getNodeName());
-//					}
-//
-//				}
-//			}
+			String textCharactersExpression = "//p[@class='pageSelector']/text()[translate(., '&#x20;&#x09;&#x0a;&#x0d;&#xa0;', '')]";
+			NodeList textItems = (NodeList)xpath.evaluate(textCharactersExpression, document, XPathConstants.NODESET);
+			
+			StringBuilder textCollector = new StringBuilder();
+			for (int i = 0; i < textItems.getLength(); i++) {
+				Node aText = textItems.item(i);
+				textCollector.append(aText.getNodeValue());
+			}
+			String currentPageNumber = StringUtils.onlyNumbers(textCollector.toString());
+			
+			this.add(new Pages().withNumberOfPages(""+numberOfPages).withCurrentPage(currentPageNumber));
+			
 		}
 	}
 

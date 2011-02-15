@@ -26,6 +26,8 @@ public class TestUtils {
 
 	public static Document domFrom(String htmlCode) throws UnsupportedEncodingException {
 		Tidy htmlCleaner = new Tidy();
+		htmlCleaner.setShowWarnings(false);
+		htmlCleaner.setQuiet(true);
 		Document dom = htmlCleaner.parseDOM(new ByteArrayInputStream(htmlCode.getBytes("UTF-8")), null);
 		return dom;
 	}

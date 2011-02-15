@@ -17,7 +17,7 @@ public class ResponseBuilder {
 		return new ResponseBuilder();
 	}
 
-	public Response build() {
+	public Response build() throws Exception {
 		Response response = new Response();
 		if(document != null) {
 			response.fillFrom(this.document, XPathFactory.newInstance().newXPath());

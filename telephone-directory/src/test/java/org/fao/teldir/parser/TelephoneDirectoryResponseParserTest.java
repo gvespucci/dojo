@@ -91,7 +91,7 @@ public class TelephoneDirectoryResponseParserTest {
 		URL url = getClass().getResource(TestFiles.MULTIPAGE_RESPONSE_HTM);
 		URLConnection urlConnection = url.openConnection();
 		
-		Response parsedResponse = theParser.parse(
+		Response actualResponse = theParser.parse(
 				new InputStreamReader(urlConnection.getInputStream()), 
 				new PrintWriter(System.out, true),
 				MarshallerFactory.marshaller(MarshallFormat.NULL), "/yabba-dabba-du", XPathFactory.newInstance().newXPath());
@@ -112,7 +112,7 @@ public class TelephoneDirectoryResponseParserTest {
 			.withNameDept("ZAZZARA, Giorgio (ESAE)").withTitle("Administration/finance/ manage").withRoom("C302").withExtension("53040")
 			.build();
 		
-		Pages pages = PagesBuilder.somePages().withNumberOfPages("6").build();
+		Pages pages = PagesBuilder.somePages().withNumberOfPages("6").withCurrentPage("1").build();
 		
 		Response expectedResponse = ResponseBuilder.aResponse()
 			.withPages(pages)
@@ -122,7 +122,7 @@ public class TelephoneDirectoryResponseParserTest {
 			.withContact(zazzara)
 			.build();
 	
-		assertThat(parsedResponse, is(equalTo(expectedResponse)));
+		assertThat(actualResponse, is(equalTo(expectedResponse)));
 		
 	}
 

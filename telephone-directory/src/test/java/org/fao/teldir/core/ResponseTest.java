@@ -30,10 +30,17 @@ public class ResponseTest {
 		middlePagechosenDocument = domFrom(TestFiles.MULTIPAGE_MIDDLE_PAGE_HTM);
 		lastPagChosenDocument = domFrom(TestFiles.MULTIPAGE_LAST_PAGE_HTM);
 	}
-	private Document domFrom(String resourceName)
-			throws UnsupportedEncodingException, IOException {
+	
+	private Document domFrom(String resourceName) throws UnsupportedEncodingException, IOException {
 		return TestUtils.domFrom(TestUtils.extractHtmlCodeFrom(new InputStreamReader(getClass().getResourceAsStream(resourceName))));
 	}
+	
+	@Test
+	public void emptyResponseFromNullXPath() throws Exception {
+		Response response = new Response().fillFrom(firstPageChosenDocument, null);
+		assertThat(response, is(equalTo(new Response())));
+	}
+	
 	@Test
 	public void noPagesFromEmptyDocument() throws Exception {
 		Document empty = TestUtils.domFrom("");
@@ -42,7 +49,7 @@ public class ResponseTest {
 	}
 	
 	@Test
-	public void noPagesFromNullDocument() throws Exception {
+	public void emptyResponseFromNullDocument() throws Exception {
 		Response response = new Response().fillFrom(null, xpath);
 		assertThat(response, is(equalTo(new Response())));
 	}
@@ -51,17 +58,19 @@ public class ResponseTest {
 	public void pageNumberWhenFirstPageChosen() throws Exception {
 		Response actualResponse = new Response().fillFrom(firstPageChosenDocument, xpath);
 		
-		Pages pages = PagesBuilder.somePages().withNumberOfPages("6").withCurrentPage("1").build();
+		Pages pages = PagesBuilder.sixPages().withCurrentPage("1").build();
 		Response expectedResponse = ResponseBuilder.aResponse().withPages(pages).build();
 		
 		assertThat(actualResponse, is(equalTo(expectedResponse)));
 	}
 	
+	
+	
 	@Test
 	public void pageNumberWhenMiddlePageChosen() throws Exception {
 		Response actualResponse = new Response().fillFrom(middlePagechosenDocument, xpath);
 		
-		Pages pages = PagesBuilder.somePages().withNumberOfPages("6").withCurrentPage("4").build();
+		Pages pages = PagesBuilder.sixPages().withCurrentPage("4").build();
 		Response expectedResponse = ResponseBuilder.aResponse().withPages(pages).build();
 		
 		assertThat(actualResponse, is(equalTo(expectedResponse)));
@@ -71,7 +80,7 @@ public class ResponseTest {
 	public void pageNumberWhenLastPageChosen() throws Exception {
 		Response actualResponse = new Response().fillFrom(lastPagChosenDocument, xpath);
 		
-		Pages pages = PagesBuilder.somePages().withNumberOfPages("6").withCurrentPage("6").build();
+		Pages pages = PagesBuilder.sixPages().withCurrentPage("6").build();
 		Response expectedResponse = ResponseBuilder.aResponse().withPages(pages).build();
 		
 		assertThat(actualResponse, is(equalTo(expectedResponse)));
@@ -81,7 +90,7 @@ public class ResponseTest {
 	public void currentPageWhenFirstPageChosen() throws Exception {
 		Response actualResponse = new Response().fillFrom(firstPageChosenDocument, xpath);
 		
-		Pages pages = PagesBuilder.somePages().withNumberOfPages("6").withCurrentPage("1").build();
+		Pages pages = PagesBuilder.sixPages().withCurrentPage("1").build();
 		Response expectedResponse = ResponseBuilder.aResponse().withPages(pages).build();
 		
 		assertThat(actualResponse, is(equalTo(expectedResponse)));

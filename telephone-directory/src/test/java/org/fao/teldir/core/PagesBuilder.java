@@ -23,5 +23,9 @@ public class PagesBuilder {
 		this.currentPage = currentPage;
 		return this;
 	}
+	
+	public static PagesBuilder sixPages() {
+		return PagesBuilder.somePages().withNumberOfPages("6");
+	}
 
 }

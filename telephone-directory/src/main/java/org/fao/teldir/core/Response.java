@@ -77,8 +77,10 @@ public class Response {
 	 * @throws Exception 
 	 */
 	public Response fillFrom(Document document, XPath xpath) throws Exception {
-		addContactsFrom(document, xpath);
-		addPagesFrom(document, xpath);
+		if(document != null && xpath != null) { 
+			addContactsFrom(document, xpath);
+			addPagesFrom(document, xpath);
+		}
 		return this;
 	}
 

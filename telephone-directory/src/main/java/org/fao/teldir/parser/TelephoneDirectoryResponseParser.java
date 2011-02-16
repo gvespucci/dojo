@@ -44,12 +44,12 @@ public class TelephoneDirectoryResponseParser {
 	 * @param reader TODO
 	 * @param writer
 	 * @param marshaller TODO
-	 * @param baseUrl TODO
+	 * @param urlForPages TODO
 	 * @param xpath TODO
 	 * @return
 	 * @throws Exception
 	 */
-	public Response parse(Reader reader, Writer writer, Marshaller marshaller, String baseUrl, XPath xpath) throws Exception {
+	public Response parse(Reader reader, Writer writer, Marshaller marshaller, String urlForPages, XPath xpath) throws Exception {
 		Response response = new Response();
 
 		if(reader != null && writer != null && marshaller != null) {
@@ -58,7 +58,7 @@ public class TelephoneDirectoryResponseParser {
 
 			Document cleanedHtml = cleanIt(htmlCode);
 			
-			response.fillFrom(cleanedHtml, xpath).marshallTo(writer, marshaller);
+			response.fillFrom(cleanedHtml, xpath, urlForPages).marshallTo(writer, marshaller);
 		}
 		
 		return response;

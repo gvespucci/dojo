@@ -22,6 +22,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 @ToString
 public class Response {
 	
+	public static final String RESPONSE_PAGE = "respg";
 	private Pages pages = new Pages();
 	private final List<Contact> teldir = new ArrayList<Contact>();
 
@@ -73,18 +74,19 @@ public class Response {
 	 * 
 	 * @param document
 	 * @param xpath TODO
+	 * @param urlForPages TODO
 	 * @return
 	 * @throws Exception 
 	 */
-	public Response fillFrom(Document document, XPath xpath) throws Exception {
+	public Response fillFrom(Document document, XPath xpath, String urlForPages) throws Exception {
 		if(document != null && xpath != null) { 
 			addContactsFrom(document, xpath);
-			addPagesFrom(document, xpath);
+			addPagesFrom(document, xpath, urlForPages);
 		}
 		return this;
 	}
 
-	private void addPagesFrom(Document document, XPath xpath) throws XPathExpressionException {
+	private void addPagesFrom(Document document, XPath xpath, String urlForPages) throws XPathExpressionException {
 		
 		int numberOfPages = numberOfPageLinkIn(document, xpath);
 		if(numberOfPages > 0) {
@@ -94,7 +96,7 @@ public class Response {
 			String currentPageNumber = currentPageNumberFrom(document, xpath);
 			String previousPageNumber = calculatePreviousPageNumberFrom(currentPageNumber);
 			String nextPageNumber = calculateNextPageNumberFrom(numberOfPages, currentPageNumber);
-			String baseUrl = baseUrlFrom(document, xpath);
+			String baseUrl = baseUrlFrom(urlForPages);
 			
 			this.add(
 					new Pages()
@@ -145,14 +147,8 @@ public class Response {
 		return numberOfPages;
 	}
 
-	private String baseUrlFrom(Document document, XPath xpath)
-			throws XPathExpressionException {
-		String hrefExpression = "//p[@class='pageSelector']/a/@href";
-		Node href = (Node)xpath.evaluate(hrefExpression, document, XPathConstants.NODE);
-		System.out.println(href.getNodeValue());
-		
-		String baseUrl = href.getNodeValue();
-		return baseUrl;
+	private String baseUrlFrom(String urlForPages) throws XPathExpressionException {
+		return new UrlManipulator(urlForPages).putAsLast(RESPONSE_PAGE);
 	}
 
 	private boolean isLastPage(int numberOfPages, String currentPageNumber) {

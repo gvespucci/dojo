@@ -20,7 +20,7 @@ public class ResponseBuilder {
 	public Response build() throws Exception {
 		Response response = new Response();
 		if(document != null) {
-			response.fillFrom(this.document, XPathFactory.newInstance().newXPath());
+			response.fillFrom(this.document, XPathFactory.newInstance().newXPath(), "/yabba-dabba-doo");
 		} else {
 			for (Contact contact : contacts) {
 				response.add(contact);

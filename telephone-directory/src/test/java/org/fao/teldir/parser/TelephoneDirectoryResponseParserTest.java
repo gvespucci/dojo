@@ -91,10 +91,6 @@ public class TelephoneDirectoryResponseParserTest {
 		URL url = getClass().getResource(TestFiles.MULTIPAGE_RESPONSE_HTM);
 		URLConnection urlConnection = url.openConnection();
 		
-		Response actualResponse = theParser.parse(
-				new InputStreamReader(urlConnection.getInputStream()), 
-				new PrintWriter(System.out, true),
-				MarshallerFactory.marshaller(MarshallFormat.NULL), "/yabba-dabba-du", XPathFactory.newInstance().newXPath());
 		
 		Contact maddalena = ContactBuilder.aContact()
 			.withNameDept("DI GIORGIO, Maddalena (AGNA)").withTitle("CLERK TYPIST").withRoom("C251").withExtension("55413")
@@ -112,7 +108,11 @@ public class TelephoneDirectoryResponseParserTest {
 			.withNameDept("ZAZZARA, Giorgio (ESAE)").withTitle("Administration/finance/ manage").withRoom("C302").withExtension("53040")
 			.build();
 		
-		Pages pages = PagesBuilder.somePages().withNumberOfPages("6").withCurrentPage("1").withNextPage("2").build();
+		Pages pages = PagesBuilder.somePages()
+			.withNumberOfPages("6")
+			.withCurrentPage("1")
+			.withNextPage("2")
+			.build();
 		
 		Response expectedResponse = ResponseBuilder.aResponse()
 			.withPages(pages)
@@ -121,6 +121,11 @@ public class TelephoneDirectoryResponseParserTest {
 			.withContact(pala)
 			.withContact(zazzara)
 			.build();
+
+		Response actualResponse = theParser.parse(
+				new InputStreamReader(urlConnection.getInputStream()), 
+				new PrintWriter(System.out, true),
+				MarshallerFactory.marshaller(MarshallFormat.NULL), "/yabba-dabba-du", XPathFactory.newInstance().newXPath());
 	
 		assertThat(actualResponse, is(equalTo(expectedResponse)));
 		

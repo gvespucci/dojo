@@ -10,13 +10,15 @@ public class PagesBuilder {
 	private String currentPage = "";
 	private String previousPage = "";
 	private String nextPage = "";
+	private String baseUrl = "";
 
 	public Pages build() {
 		Pages pages = new Pages()
 			.withNumberOfPages(this.numberOfPages)
 			.withCurrentPage(this.currentPage)
 			.withPreviousPage(this.previousPage)
-			.withNextPage(this.nextPage);
+			.withNextPage(this.nextPage)
+			.withBaseUrl(this.baseUrl);
 		return pages;
 	}
 
@@ -41,6 +43,11 @@ public class PagesBuilder {
 
 	public PagesBuilder withNextPage(String nextPage) {
 		this.nextPage  = nextPage;
+		return this;
+	}
+
+	public PagesBuilder withBaseUrl(String baseUrl) {
+		this.baseUrl = baseUrl;
 		return this;
 	}
 

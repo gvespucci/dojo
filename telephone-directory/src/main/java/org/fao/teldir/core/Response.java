@@ -89,6 +89,7 @@ public class Response {
 	private void addPagesFrom(Document document, XPath xpath, String urlForPages) throws XPathExpressionException {
 		
 		int numberOfPages = numberOfPageLinkIn(document, xpath);
+		System.out.println(numberOfPages+"");
 		if(numberOfPages > 0) {
 			
 			numberOfPages = calculateRightNumberOfPages(document, xpath, numberOfPages);
@@ -105,6 +106,8 @@ public class Response {
 						.withPreviousPage(previousPageNumber)
 						.withNextPage(nextPageNumber)
 						.withBaseUrl(baseUrl));
+			
+			System.out.println(this);
 			
 		}
 	}
@@ -130,8 +133,7 @@ public class Response {
 		return currentPageNumber;
 	}
 
-	private int calculateRightNumberOfPages(Document document, XPath xpath,
-			int numberOfPages) throws XPathExpressionException {
+	private int calculateRightNumberOfPages(Document document, XPath xpath, int numberOfPages) throws XPathExpressionException {
 		String previousLinkExpression = pageSelectors()+"/a[text()='< Prev']";
 		Node prevAnchor = (Node)xpath.evaluate(previousLinkExpression, document, XPathConstants.NODE);
 		if(prevAnchor != null) {

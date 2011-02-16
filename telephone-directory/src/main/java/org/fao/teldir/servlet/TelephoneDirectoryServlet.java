@@ -14,8 +14,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.xpath.XPathFactory;
 
+import org.apache.log4j.Logger;
 import org.fao.teldir.core.Response;
-import org.fao.teldir.marshall.MarshallFormat;
+import org.fao.teldir.logging.ApplicationLogger;
 import org.fao.teldir.marshall.Marshaller;
 import org.fao.teldir.marshall.MarshallerFactory;
 import org.fao.teldir.parser.TelephoneDirectoryResponseParser;
@@ -24,6 +25,8 @@ import org.fao.teldir.parser.TelephoneDirectoryResponseParser;
  * 
  */
 public class TelephoneDirectoryServlet extends HttpServlet {
+	
+	private Logger logger = Logger.getLogger(TelephoneDirectoryServlet.class);
 	
 	public static final String FAO_INTRANET_SERVLET = "http://intranet.fao.org/IntranetServlet?";
 	/**
@@ -49,6 +52,8 @@ public class TelephoneDirectoryServlet extends HttpServlet {
 	private void processRequest(HttpServletRequest req, HttpServletResponse resp) {
 		try {
 			String urlToCall = FAO_INTRANET_SERVLET+req.getQueryString();
+			
+			ApplicationLogger.debug(logger, "[processRequest()] ", urlToCall);
 
 			URL url = new URL(urlToCall);
 	        URLConnection urlConnection = url.openConnection();
@@ -56,7 +61,7 @@ public class TelephoneDirectoryServlet extends HttpServlet {
 			
 	        resp.setCharacterEncoding("UTF-8");
 
-	        Marshaller marshaller = MarshallerFactory.marshaller(MarshallFormat.XML); //Parameter? Property?
+	        Marshaller marshaller = MarshallerFactory.marshaller(req.getParameter("format"));
 			
 	        resp.setContentType(marshaller.contentType());
 
@@ -64,23 +69,18 @@ public class TelephoneDirectoryServlet extends HttpServlet {
 	        		new InputStreamReader(urlConnection.getInputStream()), 
 	        		resp.getWriter(), 
 	        		marshaller, 
-	        		req.getContextPath()+req.getQueryString(), XPathFactory.newInstance().newXPath());
+	        		req.getContextPath()+"?"+req.getQueryString(), XPathFactory.newInstance().newXPath());
 
 		} catch (Exception e) {
-			e.printStackTrace();
-//			Exception managing?
-		} finally {
-			try {
-				Marshaller marshaller = MarshallerFactory.marshaller(MarshallFormat.XML);
-				marshaller.marshall(new Response(), resp.getWriter());
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-	}
+			e.printStackTrace(); //	Exception managing?
+				try {
+					Marshaller marshaller = MarshallerFactory.marshaller(Marshaller.XML);
+					marshaller.marshall(new Response(), resp.getWriter());
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
 
-	public static String searchFor(String searchString) {
-		return FAO_INTRANET_SERVLET+"searchType=teldir&pg=teldir&search_string="+searchString;
+		}
 	}
 }
 

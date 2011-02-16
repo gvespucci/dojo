@@ -16,7 +16,7 @@ class JsonMarshaller extends Marshaller {
 
 	@Override
 	public void marshall(Response response, Writer writer) {
-		xstream.toXML(this, writer);
+		xstream.toXML(response, writer);
 	}
 
 	@Override

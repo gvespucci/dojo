@@ -30,7 +30,7 @@ public class ResponseTest {
 		firstPageChosenDocument = domFrom(TestFiles.MULTIPAGE_FIRST_PAGE_HTM);
 		fourthPageChosenDocument = domFrom(TestFiles.MULTIPAGE_MIDDLE_PAGE_HTM);
 		lastPagChosenDocument = domFrom(TestFiles.MULTIPAGE_LAST_PAGE_HTM);
-		baseUrl = "/yabba-dabba-doo";
+		baseUrl = "/yabba-dabba-doo?searchType=teldir&respg=3&pg=teldir&respg=34567&search_string=561&respg=45";
 	}
 	
 	private Document domFrom(String resourceName) throws UnsupportedEncodingException, IOException {
@@ -129,9 +129,19 @@ public class ResponseTest {
 	}
 	
 	@Test
-	public void baseUrl() throws Exception {
-		Response actualResponse = new Response().fillFrom(firstPageChosenDocument, xpath, baseUrl);
-		assertThat(actualResponse.baseUrl(), is(equalTo(baseUrl+"?searchType=teldir&pg=teldir&search_string=561"+"&respg=")));
+	public void 
+	baseUrlWithManyParameters() throws Exception {
+		Response actualResponse = new Response().fillFrom(firstPageChosenDocument, xpath, 
+			"/yabba-dabba-doo?searchType=teldir&respg=3&pg=teldir&respg=34567&search_string=561&respg=45");
+		assertThat(actualResponse.baseUrl(), 
+			is(equalTo("/yabba-dabba-doo?searchType=teldir&pg=teldir&search_string=561&respg=")));
+	}
+	
+	@Test
+	public void 
+	baseUrlWithOnlyResponsePageParameter() throws Exception {
+		Response actualResponse = new Response().fillFrom(firstPageChosenDocument, xpath, "/yabba-dabba-doo?searchType=teldir");
+		assertThat(actualResponse.baseUrl(), is(equalTo("/yabba-dabba-doo?searchType=teldir&respg=")));
 	}
 
 }

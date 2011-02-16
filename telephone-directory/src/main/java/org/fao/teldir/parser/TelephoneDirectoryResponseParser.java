@@ -11,7 +11,6 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathFactory;
 
 import org.fao.teldir.core.Response;
-import org.fao.teldir.marshall.MarshallFormat;
 import org.fao.teldir.marshall.Marshaller;
 import org.fao.teldir.marshall.MarshallerFactory;
 import org.w3c.dom.Document;
@@ -36,7 +35,7 @@ public class TelephoneDirectoryResponseParser {
 	 * @throws Exception
 	 */
 	public Response parse(Reader reader, Writer writer, String baseUrl) throws Exception {
-		return this.parse(reader, writer, MarshallerFactory.marshaller(MarshallFormat.XML), baseUrl, XPathFactory.newInstance().newXPath());
+		return this.parse(reader, writer, MarshallerFactory.marshaller(Marshaller.XML), baseUrl, XPathFactory.newInstance().newXPath());
 	}
 	
 	/**
@@ -60,6 +59,8 @@ public class TelephoneDirectoryResponseParser {
 			
 			response.fillFrom(cleanedHtml, xpath, urlForPages).marshallTo(writer, marshaller);
 		}
+		
+		System.out.println(response);
 		
 		return response;
 	}

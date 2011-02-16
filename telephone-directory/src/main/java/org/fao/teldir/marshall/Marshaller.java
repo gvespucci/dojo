@@ -9,6 +9,9 @@ import com.thoughtworks.xstream.XStream;
 
 public abstract class Marshaller {
 	
+	public final static String XML = "xml";
+	public final static String JSON = "json";
+	
 	protected XStream xstream;
 
 	public abstract void marshall(Response response, Writer writer) throws Exception;

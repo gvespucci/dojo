@@ -50,10 +50,15 @@ public class TelephoneDirectoryServlet extends HttpServlet {
 	 * @param resp
 	 */
 	private void processRequest(HttpServletRequest req, HttpServletResponse resp) {
+		final String methodName = "[processRequest()] ";
 		try {
 			String urlToCall = FAO_INTRANET_SERVLET+req.getQueryString();
 			
-			ApplicationLogger.debug(logger, "[processRequest()] ", urlToCall);
+			ApplicationLogger.debug(logger, methodName, urlToCall);
+			ApplicationLogger.debug(logger, methodName, "URI "+req.getRequestURI());
+			ApplicationLogger.debug(logger, methodName, "URL "+req.getRequestURL().toString());
+			ApplicationLogger.debug(logger, methodName, "Query "+req.getQueryString());
+			ApplicationLogger.debug(logger, methodName, "Context "+req.getContextPath());
 
 			URL url = new URL(urlToCall);
 	        URLConnection urlConnection = url.openConnection();
@@ -69,7 +74,7 @@ public class TelephoneDirectoryServlet extends HttpServlet {
 	        		new InputStreamReader(urlConnection.getInputStream()), 
 	        		resp.getWriter(), 
 	        		marshaller, 
-	        		req.getContextPath()+"?"+req.getQueryString(), XPathFactory.newInstance().newXPath());
+	        		req.getRequestURI()+"?"+req.getQueryString(), XPathFactory.newInstance().newXPath());
 
 		} catch (Exception e) {
 			e.printStackTrace(); //	Exception managing?

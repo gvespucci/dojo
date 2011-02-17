@@ -10,6 +10,8 @@ import javax.xml.xpath.XPathExpressionException;
 
 import lombok.ToString;
 
+import org.apache.log4j.Logger;
+import org.fao.teldir.logging.ApplicationLogger;
 import org.fao.teldir.marshall.Marshaller;
 import org.fao.teldir.util.StringUtils;
 import org.w3c.dom.Document;
@@ -17,10 +19,14 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 @XStreamAlias("response")
-@ToString
+@ToString(exclude="logger")
 public class Response {
+	
+	@XStreamOmitField
+	private Logger logger = Logger.getLogger(getClass());
 	
 	public static final String RESPONSE_PAGE = "respg";
 	private Pages pages;
@@ -91,11 +97,11 @@ public class Response {
 
 	private void addPagesFrom(Document document, XPath xpath, String urlForPages) throws XPathExpressionException {
 		
-		int numberOfPages = numberOfPageLinkIn(document, xpath);
-		System.out.println(numberOfPages+"");
-		if(numberOfPages > 0) {
+		int numberOfPageLink = numberOfPageLinkIn(document, xpath);
+
+		if(numberOfPageLink > 0) {
 			
-			numberOfPages = calculateRightNumberOfPages(document, xpath, numberOfPages);
+			int numberOfPages = calculateRightNumberOfPages(document, xpath, numberOfPageLink);
 
 			String currentPageNumber = currentPageNumberFrom(document, xpath);
 			String previousPageNumber = calculatePreviousPageNumberFrom(currentPageNumber);
@@ -109,9 +115,6 @@ public class Response {
 						.withPreviousPage(previousPageNumber)
 						.withNextPage(nextPageNumber)
 						.withBaseUrl(baseUrl));
-			
-			System.out.println(this);
-			
 		}
 	}
 
@@ -167,6 +170,9 @@ public class Response {
 	private int numberOfPageLinkIn(Document document, XPath xpath) throws XPathExpressionException {
 		NodeList pageSelectorAnchors = (NodeList) xpath.evaluate(pageSelectors()+"/a", document, XPathConstants.NODESET);
 		int totalNumberOfAnchors = pageSelectorAnchors.getLength();
+		
+		ApplicationLogger.debug(logger, "numberOfPageLinkIn()", "Number of pages "+totalNumberOfAnchors);		
+		
 		return totalNumberOfAnchors;
 	}
 
@@ -182,7 +188,12 @@ public class Response {
 	 */
 	private void addContactsFrom(Document document, XPath xpath) throws XPathExpressionException {
 		NodeList staffMembers = (NodeList) xpath.evaluate("//table[@class='staffMember']", document, XPathConstants.NODESET);
-		for (int i = 0,staffMembersFound = staffMembers.getLength(); i < staffMembersFound; i++) {
+
+		int staffMembersFound = staffMembers.getLength();
+		
+		ApplicationLogger.debug(logger, "addContacsFrom()", "Staff Members found "+staffMembersFound);
+		
+		for (int i=0; i < staffMembersFound; i++) {
 			Node aStaffMember = staffMembers.item(i);
 
 			String name = xpath.evaluate(staffMembersWith(NAME_DEPT), aStaffMember);

@@ -60,8 +60,6 @@ public class TelephoneDirectoryResponseParser {
 			response.fillFrom(cleanedHtml, xpath, urlForPages).marshallTo(writer, marshaller);
 		}
 		
-		System.out.println(response);
-		
 		return response;
 	}
 

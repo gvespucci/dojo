@@ -10,7 +10,7 @@ import org.w3c.dom.Document;
 public class ResponseBuilder {
 
 	private final List<Contact> contacts = new ArrayList<Contact>();
-	private Pages pages = new Pages();
+	private Pages pages;
 	private Document document;
 
 	public static ResponseBuilder aResponse() {

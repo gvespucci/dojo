@@ -23,8 +23,8 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 public class Response {
 	
 	public static final String RESPONSE_PAGE = "respg";
-	private Pages pages = new Pages();
-	private final List<Contact> teldir = new ArrayList<Contact>();
+	private Pages pages;
+	private List<Contact> teldir;
 
 	public static final String TITLE = "title";
 	public static final String ROOM_NUMBER = "roomNumber";
@@ -32,6 +32,9 @@ public class Response {
 	public static final String NAME_DEPT = "nameDept";
 
 	public void add(Contact aContact) {
+		if(this.teldir == null) {
+			this.teldir = new ArrayList<Contact>();
+		}
 		this.teldir.add(aContact);
 	}
 
@@ -179,16 +182,16 @@ public class Response {
 	 */
 	private void addContactsFrom(Document document, XPath xpath) throws XPathExpressionException {
 		NodeList staffMembers = (NodeList) xpath.evaluate("//table[@class='staffMember']", document, XPathConstants.NODESET);
-		for (int i = 0; i < staffMembers.getLength(); i++) {
+		for (int i = 0,staffMembersFound = staffMembers.getLength(); i < staffMembersFound; i++) {
 			Node aStaffMember = staffMembers.item(i);
-			
+
 			String name = xpath.evaluate(staffMembersWith(NAME_DEPT), aStaffMember);
 			String title = xpath.evaluate(staffMembersWith(TITLE), aStaffMember);
 			String roomNumber = xpath.evaluate("substring-after("+staffMembersWith(ROOM_NUMBER)+", 'Room ')", aStaffMember);
 			String extension = xpath.evaluate("substring-after("+staffMembersWith(EXTENSION)+", 'Ext. ')", aStaffMember);
-			
+
 			Contact contact = new Contact().withNameDept(name).withTitle(title).withRoom(roomNumber).withExtension(extension);
-		
+
 			this.add(contact);
 		}
 	}

@@ -41,7 +41,7 @@
 
 <body >
 	<center>
-  <form name="frmAdvTelFind" action="./teldir" method="get" id="frmAdvTelFind">
+  <form name="frmAdvTelFind" action="./teldir" method="post" id="frmAdvTelFind">
   	<input type="hidden" name="searchType" value="teldir" />
   	<input type="hidden" name="pg" value="teldir" />
   	

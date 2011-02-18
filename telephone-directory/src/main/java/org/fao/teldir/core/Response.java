@@ -178,7 +178,7 @@ public class Response {
 		NodeList pageSelectorAnchors = (NodeList) xpath.evaluate(pageSelectors()+"/a", document, XPathConstants.NODESET);
 		int totalNumberOfAnchors = pageSelectorAnchors.getLength();
 		
-		ApplicationLogger.debug(logger, "numberOfPageLinkIn()", "Number of pages "+totalNumberOfAnchors);		
+		ApplicationLogger.debug(logger, "[numberOfPageLinkIn()]", "Number of pages "+totalNumberOfAnchors);		
 		
 		return totalNumberOfAnchors;
 	}
@@ -198,7 +198,7 @@ public class Response {
 
 		int staffMembersFound = staffMembers.getLength();
 		
-		ApplicationLogger.debug(logger, "addContacsFrom()", "Staff Members found "+staffMembersFound);
+		ApplicationLogger.debug(logger, "[addContacsFrom()]", "Staff Members found "+staffMembersFound);
 		
 		for (int i=0; i < staffMembersFound; i++) {
 			Node aStaffMember = staffMembers.item(i);

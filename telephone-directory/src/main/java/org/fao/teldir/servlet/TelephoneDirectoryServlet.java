@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.xml.xpath.XPathFactory;
 
 import org.apache.log4j.Logger;
+import org.fao.teldir.config.Configuration;
 import org.fao.teldir.core.Response;
 import org.fao.teldir.logging.ApplicationLogger;
 import org.fao.teldir.marshall.Marshaller;
@@ -28,7 +29,6 @@ public class TelephoneDirectoryServlet extends HttpServlet {
 	
 	private Logger logger = Logger.getLogger(TelephoneDirectoryServlet.class);
 	
-	public static final String FAO_INTRANET_SERVLET = "http://intranet.fao.org/IntranetServlet?";
 	/**
 	 * 
 	 */
@@ -52,7 +52,7 @@ public class TelephoneDirectoryServlet extends HttpServlet {
 	private void processRequest(HttpServletRequest req, HttpServletResponse resp) {
 		final String methodName = "[processRequest()] ";
 		try {
-			String urlToCall = FAO_INTRANET_SERVLET+req.getQueryString();
+			String urlToCall = Configuration.intranetServletUrl()+req.getQueryString();
 			
 			ApplicationLogger.debug(logger, methodName, urlToCall);
 			ApplicationLogger.debug(logger, methodName, "URI "+req.getRequestURI());
@@ -66,7 +66,7 @@ public class TelephoneDirectoryServlet extends HttpServlet {
 			
 	        resp.setCharacterEncoding("UTF-8");
 
-	        Marshaller marshaller = MarshallerFactory.marshaller(req.getParameter("format"));
+	        Marshaller marshaller = MarshallerFactory.marshaller(Configuration.responseFormat());
 			
 	        resp.setContentType(marshaller.contentType());
 

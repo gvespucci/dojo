@@ -44,9 +44,6 @@
   <form name="frmAdvTelFind" action="./teldir" method="get" id="frmAdvTelFind">
   	<input type="hidden" name="searchType" value="teldir" />
   	<input type="hidden" name="pg" value="teldir" />
-  	
-	<%@page import="org.fao.teldir.marshall.Marshaller" %>
-  	<input type="hidden" name="format" value="<%=Marshaller.XML%>" />
 	
 	  <table cellpadding="6" cellspacing="0" width="165">
 	    <tr>

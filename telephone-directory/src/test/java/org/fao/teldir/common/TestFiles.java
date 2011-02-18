@@ -11,5 +11,7 @@ public class TestFiles {
 	public static final String MULTIPLE_RESPONSE_NO_PAGE_HTM = "/multiple-response-no-page.htm";
 	public static final String MULTIPAGE_RESPONSE_HTM = "/multipage-response.htm";
 	public static final String EXACTLY_ONE_RESPONSE_HTM = "/exactly-one-response.htm";
+	public static final String NO_RESPONSE_HTM = "/no-response.htm";
+	public static final String TOO_MANY_RESPONSES_HTM = "/too-many-responses.htm";
 
 }

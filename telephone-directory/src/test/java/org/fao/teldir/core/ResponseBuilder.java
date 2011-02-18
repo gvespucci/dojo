@@ -12,6 +12,7 @@ public class ResponseBuilder {
 	private final List<Contact> contacts = new ArrayList<Contact>();
 	private Pages pages;
 	private Document document;
+	private String message;
 
 	public static ResponseBuilder aResponse() {
 		return new ResponseBuilder();
@@ -22,6 +23,7 @@ public class ResponseBuilder {
 		if(document != null) {
 			response.fillFrom(this.document, XPathFactory.newInstance().newXPath(), "/yabba-dabba-doo");
 		} else {
+			response.addMessage(this.message);
 			for (Contact contact : contacts) {
 				response.add(contact);
 			}
@@ -42,6 +44,11 @@ public class ResponseBuilder {
 
 	public ResponseBuilder fromDocument(Document document) {
 		this.document = document;
+		return this;
+	}
+
+	public ResponseBuilder withMessage(String message) {
+		this.message = message;
 		return this;
 	}
 

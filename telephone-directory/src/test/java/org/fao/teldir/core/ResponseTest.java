@@ -22,6 +22,8 @@ public class ResponseTest {
 	private Document firstPageChosenDocument;
 	private Document fourthPageChosenDocument;
 	private Document lastPagChosenDocument;
+	private Document noResponseDocument;
+	private Document tooManyResponsesDocument;
 	private String baseUrl;
 
 	@Before
@@ -30,6 +32,8 @@ public class ResponseTest {
 		firstPageChosenDocument = domFrom(TestFiles.MULTIPAGE_FIRST_PAGE_HTM);
 		fourthPageChosenDocument = domFrom(TestFiles.MULTIPAGE_MIDDLE_PAGE_HTM);
 		lastPagChosenDocument = domFrom(TestFiles.MULTIPAGE_LAST_PAGE_HTM);
+		noResponseDocument = domFrom(TestFiles.NO_RESPONSE_HTM);
+		tooManyResponsesDocument = domFrom(TestFiles.TOO_MANY_RESPONSES_HTM);
 		baseUrl = "/yabba-dabba-doo?searchType=teldir&respg=3&pg=teldir&respg=34567&search_string=561&respg=45";
 	}
 	
@@ -142,6 +146,28 @@ public class ResponseTest {
 	baseUrlWithOnlyResponsePageParameter() throws Exception {
 		Response actualResponse = new Response().fillFrom(firstPageChosenDocument, xpath, "/yabba-dabba-doo?searchType=teldir");
 		assertThat(actualResponse.baseUrl(), is(equalTo("/yabba-dabba-doo?searchType=teldir&respg=")));
+	}
+	
+	@Test
+	public void 
+	noResultFoundMessage() throws Exception {
+		Response actualResponse = new Response().fillFrom(noResponseDocument, xpath, "");
+		assertThat(actualResponse.message(), is(equalTo("0 Staff Member(s) found matching your search.")));
+	}
+	
+	@Test
+	public void 
+	tooManyResultsFoundMessage() throws Exception {
+		Response actualResponse = new Response().fillFrom(tooManyResponsesDocument, xpath, "");
+		assertThat(actualResponse.message(), 
+			is(equalTo("Too many (733) Staff Member(s) matched your search. Please refine your search and try again.")));
+	}
+	
+	@Test
+	public void acceptableNumberOfResultMessage() throws Exception {
+		Response actualResponse = new Response().fillFrom(firstPageChosenDocument, xpath, "");
+		assertThat(actualResponse.message(), 
+			is(equalTo("78 Staff Member(s) found matching your search.")));
 	}
 
 }

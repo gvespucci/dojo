@@ -46,7 +46,10 @@ public class TelephoneDirectoryResponseParserTest {
 			.withNameDept("VESPUCCI, Giorgio (CIOK)")
 			.withTitle("Computer information systems s").withRoom("B159").withExtension("56175")
 			.build();
-		Response expectedResponse = ResponseBuilder.aResponse().withContact(vespucci).build();
+		Response expectedResponse = ResponseBuilder.aResponse()
+			.withContact(vespucci)
+			.withMessage("1 Staff Member(s) found matching your search.")
+			.build();
 	
 		assertThat(parsedResponse, is(equalTo(expectedResponse)));
 	}
@@ -78,6 +81,7 @@ public class TelephoneDirectoryResponseParserTest {
 			.build();
 		
 		Response expectedResponse = ResponseBuilder.aResponse()
+			.withMessage("7 Staff Member(s) found matching your search.")
 			.withContact(maddalena)
 			.withContact(lanzarone)
 			.withContact(pala)
@@ -117,6 +121,7 @@ public class TelephoneDirectoryResponseParserTest {
 			.build();
 		
 		Response expectedResponse = ResponseBuilder.aResponse()
+			.withMessage("78 Staff Member(s) found matching your search.")
 			.withPages(pages)
 			.withContact(maddalena)
 			.withContact(lanzarone)

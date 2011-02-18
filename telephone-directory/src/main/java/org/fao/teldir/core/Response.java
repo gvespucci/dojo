@@ -8,6 +8,7 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 
+import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import org.apache.log4j.Logger;
@@ -18,11 +19,14 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import com.google.common.base.Strings;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 @XStreamAlias("response")
 @ToString(exclude="logger")
+@EqualsAndHashCode
+
 public class Response {
 	
 	@XStreamOmitField
@@ -31,6 +35,7 @@ public class Response {
 	public static final String RESPONSE_PAGE = "respg";
 	private Pages pages;
 	private List<Contact> teldir;
+	private String message = "";
 
 	public static final String TITLE = "title";
 	public static final String ROOM_NUMBER = "roomNumber";
@@ -48,35 +53,8 @@ public class Response {
 		this.pages = pages;
 	}
 	
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((pages == null) ? 0 : pages.hashCode());
-		result = prime * result + ((teldir == null) ? 0 : teldir.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Response other = (Response) obj;
-		if (pages == null) {
-			if (other.pages != null)
-				return false;
-		} else if (!pages.equals(other.pages))
-			return false;
-		if (teldir == null) {
-			if (other.teldir != null)
-				return false;
-		} else if (!teldir.equals(other.teldir))
-			return false;
-		return true;
+	public void addMessage(String message) {
+		this.message = message;	
 	}
 
 	/**
@@ -88,11 +66,40 @@ public class Response {
 	 * @throws Exception 
 	 */
 	public Response fillFrom(Document document, XPath xpath, String urlForPages) throws Exception {
-		if(document != null && xpath != null) { 
+		if(document != null && xpath != null) {
+			extractMessageFrom(document, xpath);
 			addContactsFrom(document, xpath);
 			addPagesFrom(document, xpath, urlForPages);
 		}
 		return this;
+	}
+
+	private void extractMessageFrom(Document document, XPath xpath) throws XPathExpressionException {
+		NodeList resultMessageNodes = (NodeList) xpath.evaluate("//p[@class='resultMessage']/text()", document, XPathConstants.NODESET);
+		String theMessage = "";
+		final int numberOfNodes = resultMessageNodes.getLength();
+		if(wasResultNumberAcceptable(numberOfNodes)) {
+			Node messageNode = resultMessageNodes.item(0);
+			theMessage = messageNode.getNodeValue();
+		} else 
+		if(wasThereTooManyResults(numberOfNodes)) {
+			Node firstNode = resultMessageNodes.item(0);
+			Node secondNode = resultMessageNodes.item(1);
+			
+			Node numberNode = (Node) xpath.evaluate("//p[@class='resultMessage']/font/text()", document, XPathConstants.NODE);
+			String numberOfResults = numberNode.getNodeValue();
+			
+			theMessage = firstNode.getNodeValue() + numberOfResults + secondNode.getNodeValue();
+		}
+		this.addMessage(Strings.nullToEmpty(theMessage));
+	}
+
+	private boolean wasResultNumberAcceptable(final int numberOfNodes) {
+		return numberOfNodes == 1;
+	}
+
+	private boolean wasThereTooManyResults(final int numberOfNodes) {
+		return numberOfNodes == 2;
 	}
 
 	private void addPagesFrom(Document document, XPath xpath, String urlForPages) throws XPathExpressionException {
@@ -233,6 +240,10 @@ public class Response {
 	
 	public String baseUrl() {
 		return this.pages.url();
+	}
+	
+	public String message() {
+		return this.message;
 	}
 
 }

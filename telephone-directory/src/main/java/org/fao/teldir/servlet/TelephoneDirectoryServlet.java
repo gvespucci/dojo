@@ -66,7 +66,7 @@ public class TelephoneDirectoryServlet extends HttpServlet {
 			
 	        resp.setCharacterEncoding("UTF-8");
 
-	        Marshaller marshaller = MarshallerFactory.marshaller(Configuration.responseFormat());
+	        Marshaller marshaller = MarshallerFactory.marshaller(req.getParameter("format"));
 			
 	        resp.setContentType(marshaller.contentType());
 

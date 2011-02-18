@@ -74,7 +74,7 @@ public class TelephoneDirectoryServlet extends HttpServlet {
 	        		new InputStreamReader(urlConnection.getInputStream()), 
 	        		resp.getWriter(), 
 	        		marshaller, 
-	        		req.getRequestURI()+"?"+req.getQueryString(), XPathFactory.newInstance().newXPath());
+	        		req.getRequestURL()+"?"+req.getQueryString(), XPathFactory.newInstance().newXPath());
 
 		} catch (Exception e) {
 			e.printStackTrace(); //	Exception managing?

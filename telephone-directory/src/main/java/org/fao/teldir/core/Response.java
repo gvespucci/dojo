@@ -33,9 +33,9 @@ public class Response {
 	private Logger logger = Logger.getLogger(getClass());
 	
 	public static final String RESPONSE_PAGE = "respg";
+	private String message = "";
 	private Pages pages;
 	private List<Contact> teldir;
-	private String message = "";
 
 	public static final String TITLE = "title";
 	public static final String ROOM_NUMBER = "roomNumber";

@@ -4,7 +4,6 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class UrlManipulatorTest {
@@ -17,14 +16,14 @@ public class UrlManipulatorTest {
 		manipulator = new UrlManipulator(this.urlToManipulate);
 	}
 
-	@Ignore @Test
+	@Test
 	public void 
 	putAtLastReturnsTheSameUrlWhenParameterIsEmpty() {
 		String actualUrl = manipulator.putAsLast("");
 		assertThat(actualUrl, is(equalTo(actualUrl)));
 	}
 	
-	@Ignore @Test
+	@Test
 	public void 
 	putAtLastReturnsTheSameUrlWhenParameterIsNull() {
 		String actualUrl = manipulator.putAsLast(null);

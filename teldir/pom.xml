@@ -2,10 +2,10 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.fao.teldir</groupId>
-  <artifactId>telephone-directory</artifactId>
+  <artifactId>teldir</artifactId>
   <packaging>war</packaging>
   <version>0.1.0-SNAPSHOT</version>
-  <name>telephone-directory</name>
+  <name>teldir</name>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
@@ -122,9 +122,9 @@
 			<url>http://projectlombok.org/mavenrepo</url>
 		</repository>
 	</repositories>
-	<description>Wraps a Telephone Directory IntranetServlet call as an XML/JSON response.</description>
+	<description>Wraps a Telephone Directory IntranetServlet call into an XML/JSON response.</description>
 	<build>
-    <finalName>telephone-directory</finalName>
+    <finalName>teldir</finalName>
     <plugins>
     	<plugin>
     		<groupId>org.kohsuke.jetty</groupId>

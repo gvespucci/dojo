@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0"?>
-<project name="telephone-directory">
+<project name="teldir">
 
 	<target name="copy-war">
 

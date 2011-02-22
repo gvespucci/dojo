@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="maven-antrun-" default="main"  >
+<target name="main">
+  <property name="target.dir" value="C:\dev\workspaces\dojo\telephone-directory\target"/>
+  <property name="war.filename" value="telephone-directory.war"/>
+  <property name="shared.dir" value="T:/Working Area/KCTP/Vespucci"/>
+  <ant antfile="C:\dev\workspaces\dojo\telephone-directory/build.xml">
+    <target name="copy-war"/>
+  </ant>
+</target>
+</project>

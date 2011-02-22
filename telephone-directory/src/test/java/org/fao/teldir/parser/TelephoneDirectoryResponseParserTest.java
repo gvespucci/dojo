@@ -25,11 +25,12 @@ import org.junit.Test;
 public class TelephoneDirectoryResponseParserTest {
 	
 	private TelephoneDirectoryResponseParser theParser;
-	private String buddyMarshaller = "yabba-dadda-marshaller";
+	private Marshaller nullMarshaller;
 	
 	@Before
 	public void setUp() {
 		theParser = new TelephoneDirectoryResponseParser();
+		nullMarshaller = MarshallerFactory.nullMarshaller();
 	}
 
 	@Test public void 
@@ -40,7 +41,7 @@ public class TelephoneDirectoryResponseParserTest {
 		Response parsedResponse = theParser.parse(
 				new InputStreamReader(urlConnection.getInputStream()), 
 				new PrintWriter(System.out, true),
-				MarshallerFactory.marshaller(buddyMarshaller), "/yabba-dabba-du", XPathFactory.newInstance().newXPath());
+				nullMarshaller, "/yabba-dabba-du", XPathFactory.newInstance().newXPath());
 		
 		Contact vespucci = ContactBuilder.aContact()
 			.withNameDept("VESPUCCI, Giorgio (CIOK)")
@@ -62,7 +63,7 @@ public class TelephoneDirectoryResponseParserTest {
 		Response parsedResponse = theParser.parse(
 				new InputStreamReader(urlConnection.getInputStream()), 
 				new PrintWriter(System.out, true),
-				MarshallerFactory.marshaller(buddyMarshaller), "/yabba-dabba-du", XPathFactory.newInstance().newXPath());
+				nullMarshaller, "/yabba-dabba-du", XPathFactory.newInstance().newXPath());
 		
 		Contact maddalena = ContactBuilder.aContact()
 			.withNameDept("DI GIORGIO, Maddalena (AGNA)").withTitle("CLERK TYPIST").withRoom("C251").withExtension("55413")
@@ -132,7 +133,7 @@ public class TelephoneDirectoryResponseParserTest {
 		Response actualResponse = theParser.parse(
 				new InputStreamReader(urlConnection.getInputStream()), 
 				new PrintWriter(System.out, true),
-				MarshallerFactory.marshaller(buddyMarshaller), "/yabba-dabba-doo?searchType=teldir&respg=1", XPathFactory.newInstance().newXPath());
+				nullMarshaller, "/yabba-dabba-doo?searchType=teldir&respg=1", XPathFactory.newInstance().newXPath());
 	
 		assertThat(actualResponse, is(equalTo(expectedResponse)));
 		
@@ -142,7 +143,7 @@ public class TelephoneDirectoryResponseParserTest {
 	shouldReturnAnEmptyResponseWhenReaderIsNull() throws Exception {
 		Response response = theParser.parse(null, 
 				new PrintWriter(System.out, true),
-				MarshallerFactory.marshaller(buddyMarshaller), "/yabba-dabba-du", XPathFactory.newInstance().newXPath());
+				nullMarshaller, "/yabba-dabba-du", XPathFactory.newInstance().newXPath());
 		assertThat(response, is(equalTo(new Response())));
 	}
 	
@@ -151,7 +152,7 @@ public class TelephoneDirectoryResponseParserTest {
 		Response response = theParser.parse(
 				new InputStreamReader(getClass().getResourceAsStream(TestFiles.EXACTLY_ONE_RESPONSE_HTM)), 
 				null, 
-				MarshallerFactory.marshaller(buddyMarshaller), "/yabba-dabba-du", XPathFactory.newInstance().newXPath());
+				nullMarshaller, "/yabba-dabba-du", XPathFactory.newInstance().newXPath());
 		assertThat(response, is(equalTo(new Response())));
 	}
 	

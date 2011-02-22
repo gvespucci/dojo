@@ -30,13 +30,18 @@ public class MarshallFactoryTest {
 	}
 	
 	@Test
-	public void returnsNullMarshallerWhenNullRequested() {
-		assertThat(MarshallerFactory.marshaller(null), is(instanceOf(NullMarshaller.class)));
+	public void returnsXmlMarshallerWhenNullRequested() {
+		assertThat(MarshallerFactory.marshaller(null), is(instanceOf(XmlMarshaller.class)));
 	}
 	
 	@Test
-	public void returnsNullMarshallerWhenEmptyRequested() {
-		assertThat(MarshallerFactory.marshaller(""), is(instanceOf(NullMarshaller.class)));
+	public void returnsXmlMarshallerWhenEmptyRequested() {
+		assertThat(MarshallerFactory.marshaller(""), is(instanceOf(XmlMarshaller.class)));
+	}
+	
+	@Test
+	public void returnsNullMarshallerWhenRequested() {
+		assertThat(MarshallerFactory.nullMarshaller(), is(instanceOf(NullMarshaller.class)));
 	}
 
 }

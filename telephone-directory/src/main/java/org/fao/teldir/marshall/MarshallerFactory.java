@@ -10,6 +10,10 @@ public class MarshallerFactory {
 		if(Marshaller.XML.equalsIgnoreCase(format)) {
 			return new XmlMarshaller();
 		}
+		return new XmlMarshaller();
+	}
+
+	public static Marshaller nullMarshaller() {
 		return new NullMarshaller();
 	}
 }

@@ -1,5 +1,7 @@
-MIDlet-1: WithIfMIDlet,,anti_if_midlet.CommandByEqualsMIDlet
-MIDlet-2: CommandByCaseMIDlet,,anti_if_midlet.CommandByCaseMIDlet
+MIDlet-1: WithIfMIDlet,,anti_if_midlet.lwuit.LWUITCommandByEqualsMIDlet
+MIDlet-2: CommandByCaseMIDlet,,anti_if_midlet.lwuit.LWUITCommandByCaseMIDlet
+MIDlet-3: CommandByEqualsMIDlet,,anti_if_midlet.lcdui.LCDUICommandByEqualsMIDlet
+MIDlet-4: LWUITCommandByOopMIDlet,,anti_if_midlet.lwuit.LWUITCommandByOopMIDlet
 MIDlet-Jar-URL: Anti-If-Java-ME.jar
 MIDlet-Name: Anti-If-Java-ME MIDlet Suite
 MIDlet-Vendor: Giorgio Vespucci
